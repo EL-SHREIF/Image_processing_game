@@ -1,6 +1,7 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - CameraController
     - script_to_move_between_senes
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
@@ -19,14 +20,55 @@ ScriptsOnlyBuild:
     UnityEngine.UI.dll:
     - UnityEngine.EventSystems.EventSystem
     - UnityEngine.EventSystems.StandaloneInputModule
+    - UnityEngine.UI.AspectRatioFitter
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
     - UnityEngine.UI.InputField
+    - UnityEngine.UI.RawImage
     - UnityEngine.UI.Text
     - UnityEngine.UI.VerticalLayoutGroup
   sceneClasses:
+    Assets/Camer_Scene.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 11168}
+    - Class: 114
+      Script: {instanceID: 11790}
+    - Class: 114
+      Script: {instanceID: 12168}
+    - Class: 114
+      Script: {instanceID: 12898}
+    - Class: 114
+      Script: {instanceID: 13620}
+    - Class: 114
+      Script: {instanceID: 14230}
+    - Class: 114
+      Script: {instanceID: 31796}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
     Assets/Choose_mode_scene.unity:
     - Class: 1
       Script: {instanceID: 0}
@@ -58,55 +100,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 13006}
     - Class: 114
       Script: {instanceID: 13152}
-    - Class: 114
-      Script: {instanceID: 13620}
-    - Class: 114
-      Script: {instanceID: 14230}
-    - Class: 115
-      Script: {instanceID: 0}
-    - Class: 128
-      Script: {instanceID: 0}
-    - Class: 157
-      Script: {instanceID: 0}
-    - Class: 196
-      Script: {instanceID: 0}
-    - Class: 213
-      Script: {instanceID: 0}
-    - Class: 222
-      Script: {instanceID: 0}
-    - Class: 223
-      Script: {instanceID: 0}
-    - Class: 224
-      Script: {instanceID: 0}
-    Assets/Starting_the_game.unity:
-    - Class: 1
-      Script: {instanceID: 0}
-    - Class: 4
-      Script: {instanceID: 0}
-    - Class: 20
-      Script: {instanceID: 0}
-    - Class: 21
-      Script: {instanceID: 0}
-    - Class: 28
-      Script: {instanceID: 0}
-    - Class: 48
-      Script: {instanceID: 0}
-    - Class: 81
-      Script: {instanceID: 0}
-    - Class: 104
-      Script: {instanceID: 0}
-    - Class: 114
-      Script: {instanceID: 11168}
-    - Class: 114
-      Script: {instanceID: 11454}
-    - Class: 114
-      Script: {instanceID: 11508}
-    - Class: 114
-      Script: {instanceID: 12168}
-    - Class: 114
-      Script: {instanceID: 12864}
-    - Class: 114
-      Script: {instanceID: 13006}
     - Class: 114
       Script: {instanceID: 13620}
     - Class: 114
@@ -634,8 +627,14 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: script_to_move_between_senes
+  - hash:
+      serializedVersion: 2
+      Hash: 4d4ef7fc997f6255cdc05fbfce36bacd
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CameraController
   platform: 13
   scenePathNames:
-  - Assets/Starting_the_game.unity
   - Assets/Choose_mode_scene.unity
-  playerPath: C:/Users/SHIKO/Desktop/delete_me/New_Game/Our_Game/aaaaaaaaaaaaaaaaaaaa.apk
+  - Assets/Camer_Scene.unity
+  playerPath: C:/Users/SHIKO/Desktop/delete_me/New_Game/Our_Game/Final.apk

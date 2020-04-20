@@ -22,6 +22,18 @@
     <uses-feature
         android:name="android.hardware.vulkan.version"
         android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -67,7 +79,7 @@
             android:value="portrait|landscape" />
         <meta-data
             android:name="unity.build-id"
-            android:value="f430a4d7-9f64-40bf-a554-e6f5916a23a6" />
+            android:value="47260702-3b35-433a-bbd1-75c5341e2bb5" />
     </application>
 
 </manifest>
