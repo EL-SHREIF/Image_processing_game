@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 public class CameraController : MonoBehaviour
 {
@@ -58,10 +59,18 @@ public class CameraController : MonoBehaviour
         int orient = -backCam.videoRotationAngle;
         background.rectTransform.localEulerAngles = new UnityEngine.Vector3(0, 0, orient);
 
-  
+        unsafe
+        {
+            int n = OpenCVInterop.Detect(backCam.GetPixels32(), backCam.width, backCam.height);
+            Debug.Log(n);
+        }
     }
-
-
-
     
+}
+// Define the functions which can be called from the .dll.
+internal static class OpenCVInterop
+{
+    [DllImport("faceDetection")]
+
+    internal unsafe static extern int Detect(Color32[] img,int width,int height);
 }
