@@ -61,7 +61,8 @@ public class CameraController : MonoBehaviour
 
         unsafe
         {
-            int n = OpenCVInterop.Detect(backCam.GetPixels32(), backCam.width, backCam.height);
+            var rawImage = backCam.GetPixels32();
+            float n = OpenCVInterop.DetectRed(ref rawImage, backCam.width, backCam.height);
             Debug.Log(n);
         }
     }
@@ -72,5 +73,5 @@ internal static class OpenCVInterop
 {
     [DllImport("faceDetection")]
 
-    internal unsafe static extern int Detect(Color32[] img,int width,int height);
+    internal unsafe static extern float DetectRed(ref Color32[] rawImage, int width,int height);
 }

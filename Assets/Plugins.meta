@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 76c01d72171ccbc4482180a9b9a84b52
+=======
+guid: c5150eeba2bfd9c46a6a7aed0a5e8c04
+>>>>>>> 04f0fd0... Detect Red function for computing Red color score in image
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
