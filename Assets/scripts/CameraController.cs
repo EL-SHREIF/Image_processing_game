@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using UnityEngine.SceneManagement;
 using System.Data;
+using System.Text.RegularExpressions;
 
 public class CameraController : MonoBehaviour
 {
@@ -27,7 +28,10 @@ public class CameraController : MonoBehaviour
     public GameObject un_imp;
     public GameObject un_imp2;
 
+    public GameObject task_panel;
+    public GameObject task_msg;
     public GameObject ready_buttom;
+    public GameObject Take_picture_buttom;
 
     public bool takeway = true;
     public int timer = 30;
@@ -61,7 +65,8 @@ public class CameraController : MonoBehaviour
         un_imp.SetActive(false);
         un_imp2.SetActive(false);
         player_score.SetActive(false);
-        
+        task_panel.SetActive(false);
+        Take_picture_buttom.SetActive(false);
     }
 
     private void Update() {
@@ -83,14 +88,7 @@ public class CameraController : MonoBehaviour
         int orient = -backCam.videoRotationAngle;
         background.rectTransform.localEulerAngles = new UnityEngine.Vector3(0, 0, orient);
 
-        unsafe
-        {
-            var rawImage = backCam.GetPixels32();
-            float n = OpenCVInterop.DetectRed(ref rawImage, backCam.width, backCam.height);
-            Debug.Log(n);
-        }
-
-        if (takeway == false && timer > 0)
+        if (takeway == false && timer > 1)
         {
             time_left.GetComponent<Text>().text = timer.ToString();
             StartCoroutine(Countdown());
@@ -135,7 +133,8 @@ public class CameraController : MonoBehaviour
     {
         takeway = true;
         yield return new WaitForSeconds(1);
-        timer--;
+        if(timer>0)
+            timer--;
         time_left.GetComponent<Text>().text = timer.ToString();
         takeway = false;
     }
@@ -143,15 +142,60 @@ public class CameraController : MonoBehaviour
 
     public void Ready_to_go()
     {
-        ready_buttom.SetActive(false);
-        level_num.SetActive(true);
-        player_name.SetActive(true);
-        time_left.SetActive(true);
-        un_imp.SetActive(true);
-        un_imp2.SetActive(true);
-        player_score.SetActive(true);
-        player_name.GetComponent<Text>().text = name;
-        takeway = false;
+        string s = level_num.GetComponent<Text>().text;
+        if (s == "1") {
+            timer = 30;
+            task_msg.GetComponent<Text>().text = get_task_of_first_level();
+            ready_buttom.SetActive(false);
+            task_panel.SetActive(true);
+            level_num.SetActive(true);
+            player_name.SetActive(true);
+            time_left.SetActive(true);
+            un_imp.SetActive(true);
+            un_imp2.SetActive(true);
+            player_score.SetActive(true);
+            Take_picture_buttom.SetActive(true);
+            player_name.GetComponent<Text>().text = name;
+            takeway = false;
+        }
+
+    }
+
+    public void Capture_image() {
+        string s = level_num.GetComponent<Text>().text;
+        if (s == "1")
+        {
+            float n=evaluate_level_one();
+            task_panel.SetActive(false);
+            
+            if (timer > 0)
+            {
+                player_score.GetComponent<Text>().text = n.ToString();
+            }  
+            Take_picture_buttom.SetActive(false);
+            ready_buttom.SetActive(true);
+            level_num.GetComponent<Text>().text = "2";
+            timer = 0;
+            takeway = true;
+            time_left.GetComponent<Text>().text = "0";
+
+        }
+        
+
+    }
+
+    public string get_task_of_first_level() {
+        return "Search for red color please yazmili";    
+    }
+    public float evaluate_level_one()
+    {
+        unsafe
+        {
+            var rawImage = backCam.GetPixels32();
+            float n = OpenCVInterop.DetectRed(ref rawImage, backCam.width, backCam.height);
+            Debug.Log(n);
+            return n;
+        }
     }
 }
 // Define the functions which can be called from the .dll.
