@@ -4,6 +4,8 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using UnityEngine.SceneManagement;
+using System.Data;
 
 public class CameraController : MonoBehaviour
 {
@@ -16,22 +18,24 @@ public class CameraController : MonoBehaviour
     public RawImage background;
     public AspectRatioFitter fit;
 
-
+    private bool go_back_check = false;
+    int camidx = 0;
+    string nick_name = "";
     private void Start() {
-        d_backGround = background.texture;
-        WebCamDevice[] devices = WebCamTexture.devices;
 
-        if (devices.Length == 0) {
+        nick_name = PlayerPrefs.GetString("player_name");
+        Debug.Log(nick_name);
+
+
+        d_backGround = background.texture;
+
+        if (WebCamTexture.devices.Length == 0) {
             Debug.Log("No devices");
             camAvl = false;
             return;
         }
 
-        for (int i = 0; i < devices.Length; i++) {
-            if (devices[i].isFrontFacing) {
-                backCam = new WebCamTexture(devices[i].name, Screen.width, Screen.height);
-            }
-        }
+        backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.width, Screen.height);
 
         if (backCam == null) {
             Debug.Log("unable bardo");
@@ -45,6 +49,10 @@ public class CameraController : MonoBehaviour
     }
 
     private void Update() {
+
+        if (go_back_check) {
+            return;
+        }
 
         if (!camAvl)
             return;
@@ -66,7 +74,40 @@ public class CameraController : MonoBehaviour
             Debug.Log(n);
         }
     }
-    
+
+
+    public void go_back()
+    {
+        go_back_check = true;
+        backCam.Stop();
+        backCam = null;
+        background.texture = null;
+        SceneManager.LoadScene(0,LoadSceneMode.Single);
+    }
+
+    public void swap_camera_clicked() {
+        if (WebCamTexture.devices.Length > 0) {
+            int old_idx = camidx;
+            camidx++;
+            camidx = camidx % WebCamTexture.devices.Length;
+            if (old_idx != camidx)
+            {
+                d_backGround = background.texture;
+                backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.width, Screen.height);
+                backCam.Play();
+                background.texture = backCam;
+                camAvl = true;
+            }
+        }
+        if (backCam == null)
+        {
+            Debug.Log("unable bardo");
+            return;
+        }
+
+        
+    }
+
 }
 // Define the functions which can be called from the .dll.
 internal static class OpenCVInterop

@@ -1,0 +1,4 @@
+#Fri Apr 24 11:55:44 EET 2020
+base.0=C\:\\Users\\SHIKO\\Desktop\\delete_me\\New_Game\\Image_processing_game\\Temp\\gradleOut\\launcher\\build\\intermediates\\transforms\\dexMerger\\release\\0
+path.0=classes.dex
+renamed.0=classes.dex

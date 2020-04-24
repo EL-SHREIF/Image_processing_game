@@ -24,6 +24,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.HorizontalLayoutGroup
     - UnityEngine.UI.Image
     - UnityEngine.UI.InputField
     - UnityEngine.UI.RawImage
@@ -37,31 +38,47 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 20
       Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
     - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11168}
+      Script: {instanceID: 11208}
     - Class: 114
-      Script: {instanceID: 11790}
+      Script: {instanceID: 11496}
     - Class: 114
-      Script: {instanceID: 12168}
+      Script: {instanceID: 11550}
     - Class: 114
-      Script: {instanceID: 12898}
+      Script: {instanceID: 11836}
     - Class: 114
-      Script: {instanceID: 13620}
+      Script: {instanceID: 12216}
     - Class: 114
-      Script: {instanceID: 14230}
+      Script: {instanceID: 12924}
     - Class: 114
-      Script: {instanceID: 31796}
+      Script: {instanceID: 12958}
+    - Class: 114
+      Script: {instanceID: 13264}
+    - Class: 114
+      Script: {instanceID: 13684}
+    - Class: 114
+      Script: {instanceID: 14184}
+    - Class: 114
+      Script: {instanceID: 14310}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
     - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
       Script: {instanceID: 0}
     - Class: 222
       Script: {instanceID: 0}
@@ -87,25 +104,25 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11168}
+      Script: {instanceID: 11208}
     - Class: 114
-      Script: {instanceID: 11454}
+      Script: {instanceID: 11496}
     - Class: 114
-      Script: {instanceID: 11508}
+      Script: {instanceID: 11550}
     - Class: 114
-      Script: {instanceID: 12168}
+      Script: {instanceID: 12216}
     - Class: 114
-      Script: {instanceID: 12864}
+      Script: {instanceID: 12894}
     - Class: 114
-      Script: {instanceID: 13006}
+      Script: {instanceID: 12924}
     - Class: 114
-      Script: {instanceID: 13152}
+      Script: {instanceID: 13066}
     - Class: 114
-      Script: {instanceID: 13620}
+      Script: {instanceID: 13212}
     - Class: 114
-      Script: {instanceID: 14230}
+      Script: {instanceID: 13684}
     - Class: 114
-      Script: {instanceID: 21976}
+      Script: {instanceID: 14310}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -389,6 +406,12 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: script_to_move_between_senes
+  - hash:
+      serializedVersion: 2
       Hash: 5f1752ed2092162f016c19510c28a8b9
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -467,6 +490,12 @@ ScriptsOnlyBuild:
     className: TimelineAsset
   - hash:
       serializedVersion: 2
+      Hash: f9a3fa795fdc45b44f33cc2a28c5a2ca
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SkyboxChanger
+  - hash:
+      serializedVersion: 2
       Hash: 3b760e6526e13f7504f59e210145899a
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -491,6 +520,12 @@ ScriptsOnlyBuild:
     className: BeforeAfterTestCommandState
   - hash:
       serializedVersion: 2
+      Hash: 2d143e103df2247787ec7ae04cb6eb28
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: FPSWalkerEnhanced
+  - hash:
+      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -501,6 +536,18 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_StyleSheet
+  - hash:
+      serializedVersion: 2
+      Hash: 5111780fd6e841a48fa1fc53d36de3e6
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SkyboxRotator
+  - hash:
+      serializedVersion: 2
+      Hash: c6d94e38a727101dd467b56d57d9c12f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SmoothMouseLook
   - hash:
       serializedVersion: 2
       Hash: df434544c9f7b33d1cc7e635b180d279
@@ -519,6 +566,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
     className: PlayModeRunnerCallback
+  - hash:
+      serializedVersion: 2
+      Hash: 4d4ef7fc997f6255cdc05fbfce36bacd
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CameraController
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -597,44 +650,8 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: f9a3fa795fdc45b44f33cc2a28c5a2ca
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: SkyboxChanger
-  - hash:
-      serializedVersion: 2
-      Hash: 2d143e103df2247787ec7ae04cb6eb28
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: FPSWalkerEnhanced
-  - hash:
-      serializedVersion: 2
-      Hash: 5111780fd6e841a48fa1fc53d36de3e6
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: SkyboxRotator
-  - hash:
-      serializedVersion: 2
-      Hash: c6d94e38a727101dd467b56d57d9c12f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: SmoothMouseLook
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: script_to_move_between_senes
-  - hash:
-      serializedVersion: 2
-      Hash: 4d4ef7fc997f6255cdc05fbfce36bacd
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: CameraController
   platform: 13
   scenePathNames:
   - Assets/Choose_mode_scene.unity
   - Assets/Camer_Scene.unity
-  playerPath: C:/Users/SHIKO/Desktop/delete_me/New_Game/Our_Game/Final.apk
+  playerPath: C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Final.apk
