@@ -13,20 +13,28 @@ public class CameraController : MonoBehaviour
     public WebCamTexture backCam;
     private Texture d_backGround;
 
-
-
     public RawImage background;
     public AspectRatioFitter fit;
 
     private bool go_back_check = false;
     int camidx = 0;
     string nick_name = "";
+
+    public GameObject level_num;
+    public GameObject time_left;
+    public GameObject player_name;
+    public GameObject player_score;
+    public GameObject un_imp;
+    public GameObject un_imp2;
+
+    public GameObject ready_buttom;
+
+    public bool takeway = true;
+    public int timer = 30;
+    string name = "";
     private void Start() {
 
-        nick_name = PlayerPrefs.GetString("player_name");
-        Debug.Log(nick_name);
-
-
+        name=PlayerPrefs.GetString("player_name");
         d_backGround = background.texture;
 
         if (WebCamTexture.devices.Length == 0) {
@@ -46,6 +54,14 @@ public class CameraController : MonoBehaviour
         background.texture = backCam;
 
         camAvl = true;
+
+        level_num.SetActive(false);
+        player_name.SetActive(false);
+        time_left.SetActive(false);
+        un_imp.SetActive(false);
+        un_imp2.SetActive(false);
+        player_score.SetActive(false);
+        
     }
 
     private void Update() {
@@ -72,6 +88,12 @@ public class CameraController : MonoBehaviour
             var rawImage = backCam.GetPixels32();
             float n = OpenCVInterop.DetectRed(ref rawImage, backCam.width, backCam.height);
             Debug.Log(n);
+        }
+
+        if (takeway == false && timer > 0)
+        {
+            time_left.GetComponent<Text>().text = timer.ToString();
+            StartCoroutine(Countdown());
         }
     }
 
@@ -108,6 +130,29 @@ public class CameraController : MonoBehaviour
         
     }
 
+
+    private IEnumerator Countdown()
+    {
+        takeway = true;
+        yield return new WaitForSeconds(1);
+        timer--;
+        time_left.GetComponent<Text>().text = timer.ToString();
+        takeway = false;
+    }
+
+
+    public void Ready_to_go()
+    {
+        ready_buttom.SetActive(false);
+        level_num.SetActive(true);
+        player_name.SetActive(true);
+        time_left.SetActive(true);
+        un_imp.SetActive(true);
+        un_imp2.SetActive(true);
+        player_score.SetActive(true);
+        player_name.GetComponent<Text>().text = name;
+        takeway = false;
+    }
 }
 // Define the functions which can be called from the .dll.
 internal static class OpenCVInterop
