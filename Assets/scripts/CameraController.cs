@@ -17,6 +17,8 @@ public class CameraController : MonoBehaviour
     public RawImage background;
     public AspectRatioFitter fit;
 
+    float curr_score = 0;
+
     private bool go_back_check = false;
     int camidx = 0;
     string nick_name = "";
@@ -167,7 +169,7 @@ public class CameraController : MonoBehaviour
         {
             float n=evaluate_level_one();
             task_panel.SetActive(false);
-            
+            curr_score = n;
             if (timer > 0)
             {
                 player_score.GetComponent<Text>().text = n.ToString();
