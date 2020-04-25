@@ -38,10 +38,14 @@ public class CameraController : MonoBehaviour
     public bool takeway = true;
     public int timer = 30;
     string name = "";
+
+    int random=1;
     private void Start() {
 
         name=PlayerPrefs.GetString("player_name");
         d_backGround = background.texture;
+
+        random = Random.Range(0,20000)%3;
 
         if (WebCamTexture.devices.Length == 0) {
             Debug.Log("No devices");
@@ -187,14 +191,19 @@ public class CameraController : MonoBehaviour
     }
 
     public string get_task_of_first_level() {
-        return "Search for red color please yazmili";    
+        List<string> names = new List<string>();
+        names.Add("Red"); names.Add("Green"); names.Add("Blue");
+        return "Search for "+ names[random] +" color please yazmili";    
     }
     public float evaluate_level_one()
     {
         unsafe
         {
             var rawImage = backCam.GetPixels32();
-            float n = OpenCVInterop.DetectGreen(ref rawImage, backCam.width, backCam.height);
+            float n= 0;
+            if(random==0)n = OpenCVInterop.DetectRed(ref rawImage, backCam.width, backCam.height);
+            else if(random==1) OpenCVInterop.DetectGreen(ref rawImage, backCam.width, backCam.height);
+            else OpenCVInterop.DetectBlue(ref rawImage, backCam.width, backCam.height);
             Debug.Log(n);
             return n;
         }
