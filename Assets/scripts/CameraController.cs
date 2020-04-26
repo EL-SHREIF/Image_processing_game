@@ -99,6 +99,7 @@ public class CameraController : MonoBehaviour
             time_left.GetComponent<Text>().text = timer.ToString();
             StartCoroutine(Countdown());
         }
+        
     }
 
 
@@ -218,4 +219,6 @@ internal static class OpenCVInterop
     internal unsafe static extern float DetectBlue(ref Color32[] rawImage, int width, int height);
     [DllImport("faceDetection")]
     internal unsafe static extern float DetectGreen(ref Color32[] rawImage, int width, int height);
+    [DllImport("faceDetection")]
+    internal unsafe static extern bool DetectCircle(ref Color32[] rawImage, int width, int height);
 }

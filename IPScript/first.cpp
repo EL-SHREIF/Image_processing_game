@@ -74,3 +74,19 @@ extern "C" float __declspec(dllexport) __stdcall DetectGreen(Color32** img, int 
 
 }
 
+extern "C" bool __declspec(dllexport) __stdcall DetectCircle(Color32** img, int width, int height)
+{
+	Mat Img1(height, width, CV_8UC4, *img);
+	flip(Img1, Img1, -1);
+	Mat gray;
+	cvtColor(Img1, gray, cv::COLOR_RGBA2GRAY);
+	vector<Vec3f> circles;
+	HoughCircles(gray, circles, HOUGH_GRADIENT, 1,
+		gray.rows / 16,  // change this value to detect circles with different distances to each other
+		100, 30, 1, 50 // change the last two parameters
+   // (min_radius & max_radius) to detect larger circles
+	);
+	
+	return circles.size()>0;
+}
+
