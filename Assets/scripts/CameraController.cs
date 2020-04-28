@@ -203,9 +203,10 @@ public class CameraController : MonoBehaviour
             var rawImage = backCam.GetPixels32();
             float n= 0;
             if(random==0)n = OpenCVInterop.DetectRed(ref rawImage, backCam.width, backCam.height);
-            else if(random==1) OpenCVInterop.DetectGreen(ref rawImage, backCam.width, backCam.height);
-            else OpenCVInterop.DetectBlue(ref rawImage, backCam.width, backCam.height);
+            else if(random==1) n = OpenCVInterop.DetectGreen(ref rawImage, backCam.width, backCam.height);
+            else n = OpenCVInterop.DetectBlue(ref rawImage, backCam.width, backCam.height);
             Debug.Log(n);
+           
             return n;
         }
     }
