@@ -54,7 +54,7 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.height, Screen.width);
+        backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.width, Screen.height);
 
         if (backCam == null) {
             Debug.Log("unable bardo");
@@ -85,7 +85,7 @@ public class CameraController : MonoBehaviour
         if (!camAvl)
             return;
 
-        float ratio = (float)backCam.width / (float)backCam.height;
+        float ratio =  (float)backCam.height / (float)backCam.width;
         fit.aspectRatio = ratio;
 
 
@@ -121,7 +121,7 @@ public class CameraController : MonoBehaviour
             if (old_idx != camidx)
             {
                 d_backGround = background.texture;
-                backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.height, Screen.width);
+                backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.width, Screen.height);
                 backCam.Play();
                 background.texture = backCam;
                 camAvl = true;
