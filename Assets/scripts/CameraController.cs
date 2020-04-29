@@ -217,9 +217,9 @@ public class CameraController : MonoBehaviour
         Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
         Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
         Mat mask1 = new Mat(), mask2 = new Mat();
-        Cv2.InRange(hsv2, new Scalar(0, 120, 70), new Scalar(10, 255, 255), mask1);
-        Cv2.InRange(hsv2, new Scalar(170, 120, 70), new Scalar(180, 255, 255), mask2);
-        mask1 = mask1 + mask2;
+        Cv2.InRange(hsv2, new Scalar(0, 120, 70), new Scalar(180, 255, 255), mask1);
+        Cv2.InRange(hsv2, new Scalar(160, 120, 70), new Scalar(180, 255, 255), mask2);
+
         int redPixels = 0;
         for (int i = 0; i < mask1.Rows; i++)
         {
