@@ -7,7 +7,8 @@ using System.Runtime.InteropServices;
 using UnityEngine.SceneManagement;
 using System.Data;
 using System.Text.RegularExpressions;
-
+using OpenCvSharp;
+using Unity;
 public class CameraController : MonoBehaviour
 {
     private bool camAvl;
@@ -198,28 +199,69 @@ public class CameraController : MonoBehaviour
     }
     public float evaluate_level_one()
     {
-        unsafe
-        {
-            var rawImage = backCam.GetPixels32();
-            float n= 0;
-            if(random==0)n = OpenCVInterop.DetectRed(ref rawImage, backCam.width, backCam.height);
-            else if(random==1) n = OpenCVInterop.DetectGreen(ref rawImage, backCam.width, backCam.height);
-            else n = OpenCVInterop.DetectBlue(ref rawImage, backCam.width, backCam.height);
-            Debug.Log(n);
+       
+        var rawImage = backCam.GetPixels32();
+        float n= 0;
+        if(random==0)n = DetectRed();
+        else if(random==1) n = DetectGreen();
+        else n = DetectBlue();
+        Debug.Log(n);
            
-            return n;
+        return n;
+        
+    }
+    public float DetectRed()
+    {
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
+        Mat hsv1 = new Mat(), hsv2 = new Mat();
+        Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
+        Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
+        Mat mask1 = new Mat(), mask2 = new Mat();
+        Cv2.InRange(hsv2, new Scalar(0, 120, 70), new Scalar(10, 255, 255), mask1);
+        Cv2.InRange(hsv2, new Scalar(170, 120, 70), new Scalar(180, 255, 255), mask2);
+        mask1 = mask1 + mask2;
+        int redPixels = 0;
+        for (int i = 0; i < mask1.Rows; i++)
+        {
+            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 && mask1.At<Vec3b>(i, j)[1] != 0 && mask1.At<Vec3b>(i, j)[2] != 0) redPixels++;
         }
+        float score = (float)redPixels / (backCam.width * backCam.height);
+        score = score * 10;
+        return score;
+    }
+    public float DetectBlue()
+    {
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
+        Mat hsv1 = new Mat(), hsv2 = new Mat();
+        Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
+        Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
+        Mat mask1 = new Mat();
+        Cv2.InRange(hsv2, new Scalar(100, 150, 0), new Scalar(140, 255, 255), mask1);
+        int redPixels = 0;
+        for (int i = 0; i < mask1.Rows; i++)
+        {
+            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 && mask1.At<Vec3b>(i, j)[1] != 0 && mask1.At<Vec3b>(i, j)[2] != 0) redPixels++;
+        }
+        float score = (float)redPixels / (backCam.width * backCam.height);
+        score = score * 10;
+        return score;
+    }
+    public float DetectGreen()
+    {
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
+        Mat hsv1 = new Mat(), hsv2 = new Mat();
+        Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
+        Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
+        Mat mask1 = new Mat();
+        Cv2.InRange(hsv2, new Scalar(36, 0, 0), new Scalar(86, 255, 255), mask1);
+        int redPixels = 0;
+        for (int i = 0; i < mask1.Rows; i++)
+        {
+            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 && mask1.At<Vec3b>(i, j)[1] != 0 && mask1.At<Vec3b>(i, j)[2] != 0) redPixels++;
+        }
+        float score = (float)redPixels / (backCam.width * backCam.height);
+        score = score * 10;
+        return score;
     }
 }
-// Define the functions which can be called from the .dll.
-internal static class OpenCVInterop
-{
-    [DllImport("faceDetection")]
-    internal unsafe static extern float DetectRed(ref Color32[] rawImage, int width,int height);
-    [DllImport("faceDetection")]
-    internal unsafe static extern float DetectBlue(ref Color32[] rawImage, int width, int height);
-    [DllImport("faceDetection")]
-    internal unsafe static extern float DetectGreen(ref Color32[] rawImage, int width, int height);
-    [DllImport("faceDetection")]
-    internal unsafe static extern bool DetectCircle(ref Color32[] rawImage, int width, int height);
-}
+

@@ -24,7 +24,6 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
-    - UnityEngine.UI.HorizontalLayoutGroup
     - UnityEngine.UI.Image
     - UnityEngine.UI.InputField
     - UnityEngine.UI.RawImage
@@ -59,17 +58,15 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12216}
     - Class: 114
-      Script: {instanceID: 12924}
+      Script: {instanceID: 12922}
     - Class: 114
-      Script: {instanceID: 12958}
+      Script: {instanceID: 12956}
     - Class: 114
-      Script: {instanceID: 13264}
+      Script: {instanceID: 13682}
     - Class: 114
-      Script: {instanceID: 13684}
+      Script: {instanceID: 14182}
     - Class: 114
-      Script: {instanceID: 14184}
-    - Class: 114
-      Script: {instanceID: 14310}
+      Script: {instanceID: 14308}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -112,17 +109,17 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 12216}
     - Class: 114
-      Script: {instanceID: 12894}
+      Script: {instanceID: 12892}
     - Class: 114
-      Script: {instanceID: 12924}
+      Script: {instanceID: 12922}
     - Class: 114
-      Script: {instanceID: 13066}
+      Script: {instanceID: 13064}
     - Class: 114
-      Script: {instanceID: 13212}
+      Script: {instanceID: 13210}
     - Class: 114
-      Script: {instanceID: 13684}
+      Script: {instanceID: 13682}
     - Class: 114
-      Script: {instanceID: 14310}
+      Script: {instanceID: 14308}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -406,7 +403,7 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: 53de74b30f4dfd86583dceb109811f0c
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: script_to_move_between_senes
@@ -568,7 +565,7 @@ ScriptsOnlyBuild:
     className: PlayModeRunnerCallback
   - hash:
       serializedVersion: 2
-      Hash: 4d4ef7fc997f6255cdc05fbfce36bacd
+      Hash: c95f3ec89051f98635405a5ef98ec8da
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraController
@@ -650,6 +647,78 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: CameraScaler
+  - hash:
+      serializedVersion: 2
+      Hash: 43a769f8d4267784128d36edda3f10c8
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: FaceDetectorScene
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: DocumentScannerScript
+  - hash:
+      serializedVersion: 2
+      Hash: 6c0e8d296af8837cc1162dbeb5bbf284
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: TrackingScript
+  - hash:
+      serializedVersion: 2
+      Hash: 8566fcc93050d6c4af847074c2e55a7b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: GrayscaleScript
+  - hash:
+      serializedVersion: 2
+      Hash: 8566fcc93050d6c4af847074c2e55a7b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: MarkerDetector
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: DocumentScannerLobby
+  - hash:
+      serializedVersion: 2
+      Hash: a4c10d359f353728d68c46b1747af230
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: LobbyScript
+  - hash:
+      serializedVersion: 2
+      Hash: 6c0e8d296af8837cc1162dbeb5bbf284
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: LiveSketchScript
+  - hash:
+      serializedVersion: 2
+      Hash: 8566fcc93050d6c4af847074c2e55a7b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: ContoursByShapeScript
+  - hash:
+      serializedVersion: 2
+      Hash: d686a7279d03eb7ea9a2f4899603b958
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: AlphabetOCRScene
+  - hash:
+      serializedVersion: 2
+      Hash: 25759fed02b9b9bec6c0f2b855ae2642
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: OpenCvSharp.Demo
+    className: FaceRecognizerScene
   platform: 13
   scenePathNames:
   - Assets/Choose_mode_scene.unity
