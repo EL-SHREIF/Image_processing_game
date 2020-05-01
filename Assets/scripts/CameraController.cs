@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
-using System.Numerics;
-using System.Runtime.InteropServices;
 using UnityEngine.SceneManagement;
-using System.Data;
-using System.Text.RegularExpressions;
 using OpenCvSharp;
-using Unity;
+using OpenCvSharp.Aruco;
+using OpenCvSharp.ML;
+using OpenCvSharp.Tracking;
+
 public class CameraController : MonoBehaviour
 {
     private bool camAvl;
@@ -41,6 +40,9 @@ public class CameraController : MonoBehaviour
     string name = "";
 
     int random=1;
+    Mat draw = new Mat();
+    Point last = new Point();
+
     private void Start() {
 
         name=PlayerPrefs.GetString("player_name");
@@ -74,6 +76,7 @@ public class CameraController : MonoBehaviour
         player_score.SetActive(false);
         task_panel.SetActive(false);
         Take_picture_buttom.SetActive(false);
+        draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3,new Scalar(0,0,0));
     }
 
     private void Update() {
@@ -100,8 +103,9 @@ public class CameraController : MonoBehaviour
             time_left.GetComponent<Text>().text = timer.ToString();
             StartCoroutine(Countdown());
         }
-        //DetectCircle();
+        DetectCircle();
         
+        Cv2.ImShow("blank", draw);
     }
 
 
@@ -267,89 +271,66 @@ public class CameraController : MonoBehaviour
     {
         Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
         Cv2.Flip(img, img, FlipMode.Y);
+        Cv2.MedianBlur(img, img, 51);
         Mat hsv1 = new Mat(), hsv2 = new Mat();
         Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2RGB);
-        //Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
+        Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.RGB2HSV);
         Mat mask1 = new Mat();
-        Cv2.InRange(hsv1, new Scalar(220, 220, 0), new Scalar(255, 255, 255), mask1);
+        Cv2.InRange(hsv2, new Scalar(100, 120, 70), new Scalar(150, 255, 255), mask1);
+        
+        int elementSize = 5;
+        Mat element = Cv2.GetStructuringElement(OpenCvSharp.MorphShapes.Ellipse, new Size(2 * elementSize + 1, 2 * elementSize + 1), new Point(elementSize, elementSize));
+        Cv2.Erode(mask1, mask1, element,null, 4);
+
         Cv2.ImShow("Black mask", mask1);
 
+        
         Mat gray = new OpenCvSharp.Mat();
         Cv2.CvtColor(img, gray, OpenCvSharp.ColorConversionCodes.RGBA2GRAY);
         //Cv2.ImShow("gray mask", gray);
         CircleSegment[] circles = null;
-        circles = Cv2.HoughCircles(gray,OpenCvSharp.HoughMethods.Gradient, 1,
-            img.Rows/16,  // change this value to detect circles with different distances to each other
+        circles = Cv2.HoughCircles(mask1,OpenCvSharp.HoughMethods.Gradient, 10,
+            100,  // change this value to detect circles with different distances to each other
             100, 30, 1, 40 // change the last two parameters
                            // (min_radius & max_radius) to detect larger circles
         );
-       
+        
         for (int i = 0; i < circles.Length; i++)
         {
             CircleSegment c = circles[i];
             Point center = c.Center;
+            fill(center.X, center.Y);
+            if(last.X!=0&&last.Y!=0)Cv2.Line(draw, center, last, new Scalar(255, 0, 0), 4, LineTypes.Filled);
+            last = center;
+            
             // circle center
             Cv2.Circle(img, center.X,center.Y, 1,new Scalar(0, 100, 100), 3, OpenCvSharp.LineTypes.AntiAlias);
             // circle outline
             float radius = c.Radius;
             Cv2.Circle(img, center.X,center.Y, (int)radius,new Scalar(255, 0, 255), 3, OpenCvSharp.LineTypes.AntiAlias);
         }
-        //Cv2.ImShow("detected circles", img);
+        Cv2.ImShow("detected circles", img);
         return true;
     }
-    public void DetectCircle2()
+    public void fill(int x,int y)
     {
-        int minH = 130, maxH = 160, minS = 10, maxS = 40, minV = 75, maxV = 130;
-
-        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
-        Mat hsv1 = new Mat(), hsv2 = new Mat();
-        Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
-        Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
-        Cv2.InRange(hsv2, new Scalar(minH, minS, minV), new Scalar(maxH, maxS, maxV), hsv2);
-        // Pre processing
-        int blurSize = 5;
-        int elementSize = 5;
-        Cv2.MedianBlur(hsv2, hsv2, blurSize);
-        Mat element = Cv2.GetStructuringElement(OpenCvSharp.MorphShapes.Ellipse,new Size(2 * elementSize + 1, 2 * elementSize + 1), new Point(elementSize, elementSize));
-        Cv2.Dilate(hsv2, hsv2, element);
-        // Contour detection
-             
-        Point[][] contours = new Point[100][];
-        HierarchyIndex[] hierarchy = new HierarchyIndex[100];
-        Cv2.FindContours(hsv2,out contours,out hierarchy,OpenCvSharp.RetrievalModes.External,OpenCvSharp.ContourApproximationModes.ApproxSimple,new Point(0, 0));
-        int largestContour = 0;
-        for (int i = 1; i < contours.Length; i++)
+        draw.Set<Scalar>(y, x, new Scalar(255, 0, 0));
+        for(int i = 0; i < 4; i++)
         {
-            if (Cv2.ContourArea(contours[i]) > Cv2.ContourArea(contours[largestContour]))
-                largestContour = i;
+            draw.Set<Scalar>(y - i, x - i, new Scalar(255, 0, 0));
+            draw.Set<Scalar>(y + i, x + i, new Scalar(255, 0, 0));
+            draw.Set<Scalar>(y - i, x + i, new Scalar(255, 0, 0));
+            draw.Set<Scalar>(y + i, x - i, new Scalar(255, 0, 0));
+            draw.Set<Scalar>(y, x - i, new Scalar(255, 0, 0));
+            draw.Set<Scalar>(y, x + i, new Scalar(255, 0, 0));
+            draw.Set<Scalar>(y + i, x, new Scalar(255, 0, 0));
+            draw.Set<Scalar>(y - i, x, new Scalar(255, 0, 0));
         }
-        Cv2.DrawContours(img, contours, largestContour, new Scalar(0, 0, 255), 1);
-        // Convex hull
-        if (!(contours.Length==0))
-        {
-            Point[][] hull = new Point[1][];
-            hull[0] = Cv2.ConvexHull(contours[largestContour]);
-            Cv2.DrawContours(img, hull, 0, new Scalar(0, 255, 0), 3);
-            if (hull[0].Length > 2)
-            {
-                Point[] hullIndexes = null;
-                hullIndexes = Cv2.ConvexHull(contours[largestContour], true);
-                Mat convexityDefectsV = new Mat();
-                Mat inp = new OpenCvSharp.MatOfPoint(img.Rows,img.Cols,contours[largestContour]);
-                Mat inp2 = new OpenCvSharp.MatOfPoint(img.Rows, img.Cols, hullIndexes);
-                Cv2.ConvexityDefects(inp, inp2, convexityDefectsV);
-                for (int i = 0; i < convexityDefectsV.Rows; i++)
-                {
-                    Point p1 = contours[largestContour][convexityDefectsV.At<Vec3b>(i)[0]];
-                    Point p2 = contours[largestContour][convexityDefectsV.At<Vec3b>(i)[1]];
-                    Point p3 = contours[largestContour][convexityDefectsV.At<Vec3b>(i)[2]];
-                    Cv2.Line(img, p1, p3, new Scalar(255, 0, 0), 2);
-                    Cv2.Line(img, p3, p2, new Scalar(255, 0, 0), 2);
-                }
-            }
-        }
-        Cv2.ImShow("output", img);
         
     }
+
+    
+
 }
+
 
