@@ -34,6 +34,14 @@ public class CameraController : MonoBehaviour
     string nick_name = "";
 
     //Level 3 Variables======================================================
+    private float cameraScale = 1f;
+    private float shiftX = 0f;
+    private float shiftY = 0f;
+    private float scaleFactor = 1;
+
+    private static Texture2D boxOutlineTexture;
+    private static GUIStyle labelStyle;
+   
     public Classifier classifier;
     private bool isWorking = false;
     public Text uiText;
@@ -46,7 +54,8 @@ public class CameraController : MonoBehaviour
     public GameObject player_name;
     public GameObject player_score;
     public GameObject un_imp;
-    public GameObject un_imp2;
+    public GameObject un_imp2; 
+    public AspectRatioFitter fitter;
 
     public GameObject task_panel;
     public GameObject task_msg;
@@ -64,31 +73,24 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-
         name = PlayerPrefs.GetString("player_name");
         d_backGround = background.texture;
 
         random = Random.Range(0, 20000) % 3;
 
-        if (WebCamTexture.devices.Length == 0)
-        {
-            Debug.Log("No devices");
-            camAvl = false;
-            return;
-        }
-
         backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.width, Screen.height);
-
-        if (backCam == null)
-        {
-            Debug.Log("unable bardo");
-            return;
-        }
-
-        backCam.Play();
         background.texture = backCam;
-
+        backCam.Play();
+        
         camAvl = true;
+
+        boxOutlineTexture = new Texture2D(1, 1);
+        boxOutlineTexture.SetPixel(0, 0, Color.red);
+        boxOutlineTexture.Apply();
+
+        labelStyle = new GUIStyle();
+        labelStyle.fontSize = 50;
+        labelStyle.normal.textColor = Color.red;
 
         level_num.SetActive(false);
         player_name.SetActive(false);
@@ -101,6 +103,7 @@ public class CameraController : MonoBehaviour
         draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
 
         level = 1;
+        CalculateShift(Classifier.IMAGE_SIZE);
     }
 
     private void Update()
@@ -114,22 +117,27 @@ public class CameraController : MonoBehaviour
         if (!camAvl)
             return;
 
-        float ratio = (float)backCam.height / (float)backCam.width;
-        fit.aspectRatio = ratio;
+        float ratio = (float)backCam.width / (float)backCam.height;
+        fitter.aspectRatio = ratio;
 
-
-        float scaleY = backCam.videoVerticallyMirrored ? -1f : 1f;
-        background.rectTransform.localScale = new UnityEngine.Vector3(1f, scaleY, 1f);
+        float scaleX = cameraScale;
+        float scaleY = backCam.videoVerticallyMirrored ? -cameraScale : cameraScale;
+        background.rectTransform.localScale = new Vector3(scaleX, scaleY, 1f);
 
         int orient = -backCam.videoRotationAngle;
-        background.rectTransform.localEulerAngles = new UnityEngine.Vector3(0, 0, orient);
+        background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
+
+        if (orient != 0)
+        {
+            this.cameraScale = (float)Screen.width / Screen.height;
+        }
 
         if (takeway == false && timer > 1)
         {
             time_left.GetComponent<Text>().text = timer.ToString();
             StartCoroutine(Countdown());
         }
-        DetectCircle();
+        //DetectCircle();
 
         //Cv2.ImShow("blank", draw);
 
@@ -362,8 +370,30 @@ public class CameraController : MonoBehaviour
 
     }
 
-
+    //========================================================================================================
+    //========================================================================================================
+    //========================================================================================================
     //Level 3 Functions  by Shiko
+
+    private void CalculateShift(int inputSize)
+    {
+        int smallest;
+
+        if (Screen.width < Screen.height)
+        {
+            smallest = Screen.width;
+            this.shiftY = (Screen.height - smallest) / 2f;
+        }
+        else
+        {
+            smallest = Screen.height;
+            this.shiftX = (Screen.width - smallest) / 2f;
+        }
+
+        this.scaleFactor = smallest / (float)inputSize;
+    }
+
+
     private void TFClassify()
     {
         if (this.isWorking)

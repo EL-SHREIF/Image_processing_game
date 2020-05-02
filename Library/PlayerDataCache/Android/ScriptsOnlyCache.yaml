@@ -654,7 +654,7 @@ ScriptsOnlyBuild:
     className: PlayModeRunnerCallback
   - hash:
       serializedVersion: 2
-      Hash: c09b4bb9cc0cb3c62500fc0edc8d4cfe
+      Hash: 3b8bb0bb30717ac1388e80bdddb63ab2
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraController
