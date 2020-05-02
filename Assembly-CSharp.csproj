@@ -495,11 +495,23 @@
     <Reference Include="Unity.2D.Animation.Runtime">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="MacBLAS">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/MacBLAS.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.2D.PixelPerfect.Editor">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Barracuda-editor">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Barracuda-editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Editor">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.SpriteShape.Editor">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.2D.SpriteShape.Editor.dll</HintPath>
@@ -522,11 +534,20 @@
     <Reference Include="PsdPlugin">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/PsdPlugin.dll</HintPath>
     </Reference>
+    <Reference Include="Barracuda">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Barracuda.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="iOSBLAS">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/iOSBLAS.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="BurstBLAS">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/BurstBLAS.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
@@ -569,27 +590,6 @@
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Burst">
-      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Burst.Editor">
-      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="MacBLAS">
-      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/MacBLAS.dll</HintPath>
-    </Reference>
-    <Reference Include="Barracuda-editor">
-      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Barracuda-editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Barracuda">
-      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Barracuda.dll</HintPath>
-    </Reference>
-    <Reference Include="iOSBLAS">
-      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/iOSBLAS.dll</HintPath>
-    </Reference>
-    <Reference Include="BurstBLAS">
-      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/BurstBLAS.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>D:/Unity Setup (2)/2019.3.9f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -762,11 +762,11 @@
     <Reference Include="UnityEngine.XRModule">
       <HintPath>D:/Unity Setup (2)/2019.3.9f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Burst.Unsafe">
-      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/PackageCache/com.unity.burst@1.1.1/Unity.Burst.Unsafe.dll</HintPath>
-    </Reference>
     <Reference Include="Google.Protobuf">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/PackageCache/com.unity.barracuda@0.4.0-preview/Barracuda/Plugins/ProtoBuffer/Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/PackageCache/com.unity.burst@1.1.1/Unity.Burst.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/Unity Setup (2)/2019.3.9f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

@@ -1,4 +1,4 @@
-﻿//shiko level(3)
+﻿//shiko level(2)
 using Barracuda;
 using TFClassify;
 using System.Linq;
@@ -33,7 +33,7 @@ public class CameraController : MonoBehaviour
     int camidx = 0;
     string nick_name = "";
 
-    //Level 3 Variables======================================================
+    //Level 2 Variables======================================================
     private float cameraScale = 1f;
     private float shiftX = 0f;
     private float shiftY = 0f;
@@ -46,6 +46,18 @@ public class CameraController : MonoBehaviour
     private bool isWorking = false;
     public Text uiText;
     int level;
+    int obj_num = 1;
+    string[] array_of_objects= new string[3];
+
+    public GameObject AC;
+    public GameObject WA;
+    public GameObject TLE;
+
+    int acc_num = 0;
+    const int num_of_options = 5;
+    string curr_obj = "";
+    string[] array_of_avilable_options= new string[num_of_options] { "baseball","mouse, computer mouse","remote control, remote","electric fan, blower","analog clock"};
+    int random2 = 1;
     //=======================================================================
 
     //GUI data to view and hide==============================================
@@ -77,7 +89,7 @@ public class CameraController : MonoBehaviour
         d_backGround = background.texture;
 
         random = Random.Range(0, 20000) % 3;
-
+        random2 = Random.Range(0, 20000) % num_of_options;
         backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.width, Screen.height);
         background.texture = backCam;
         backCam.Play();
@@ -97,9 +109,14 @@ public class CameraController : MonoBehaviour
         time_left.SetActive(false);
         un_imp.SetActive(false);
         un_imp2.SetActive(false);
+        AC.SetActive(false);
+        WA.SetActive(false);
+        TLE.SetActive(false);
         player_score.SetActive(false);
-        task_panel.SetActive(false);
+        //task_panel.SetActive(false);
         Take_picture_buttom.SetActive(false);
+        task_msg.GetComponent<Text>().text = "First level is searching for Colors Are you Ready??";
+        task_msg.GetComponent<Text>().fontSize = 70;
         draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
 
         level = 1;
@@ -132,18 +149,21 @@ public class CameraController : MonoBehaviour
             this.cameraScale = (float)Screen.width / Screen.height;
         }
 
-        if (takeway == false && timer > 1)
+        if (takeway == false && timer >= 1)
         {
             time_left.GetComponent<Text>().text = timer.ToString();
             StartCoroutine(Countdown());
         }
+
         //DetectCircle();
 
         //Cv2.ImShow("blank", draw);
 
+        //remove this when you finish development 
         if (level == 2) {
             TFClassify();
         }
+        //========================================
     }
 
 
@@ -172,11 +192,6 @@ public class CameraController : MonoBehaviour
                 camAvl = true;
             }
         }
-        if (backCam == null)
-        {
-            Debug.Log("unable bardo");
-            return;
-        }
 
 
     }
@@ -191,6 +206,30 @@ public class CameraController : MonoBehaviour
         takeway = false;
     }
 
+    private IEnumerator showAns(bool ans)
+    {
+        if (ans)
+        {
+            acc_num++;
+            AC.SetActive(true);
+            yield return new WaitForSeconds(2);
+            AC.SetActive(false);
+        }
+        else
+        {
+            WA.SetActive(true);
+            yield return new WaitForSeconds(2);
+            WA.SetActive(false);
+        }
+    }
+
+    private IEnumerator showTLE()
+    {
+        TLE.SetActive(true);
+        yield return new WaitForSeconds(2);
+        TLE.SetActive(false);
+    }
+
     public void Ready_to_go()
     {
         string s = level_num.GetComponent<Text>().text;
@@ -198,6 +237,7 @@ public class CameraController : MonoBehaviour
         {
             timer = 30;
             task_msg.GetComponent<Text>().text = get_task_of_first_level();
+            task_msg.GetComponent<Text>().fontSize = 100;
             ready_buttom.SetActive(false);
             task_panel.SetActive(true);
             level_num.SetActive(true);
@@ -210,6 +250,21 @@ public class CameraController : MonoBehaviour
             player_name.GetComponent<Text>().text = name;
             takeway = false;
         }
+        else if (s == "2") {
+            timer = 100;
+            task_msg.GetComponent<Text>().text = get_task_of_second_level();
+            task_msg.GetComponent<Text>().fontSize = 80;
+            ready_buttom.SetActive(false);
+            task_panel.SetActive(true);
+            level_num.SetActive(true);
+            player_name.SetActive(true);
+            time_left.SetActive(true);
+            un_imp.SetActive(true);
+            un_imp2.SetActive(true);
+            player_score.SetActive(true);
+            Take_picture_buttom.SetActive(true);
+            takeway = false;
+        }
 
     }
 
@@ -219,21 +274,57 @@ public class CameraController : MonoBehaviour
         if (s == "1")
         {
             float n = evaluate_level_one();
-            task_panel.SetActive(false);
             curr_score = n;
             if (timer > 0)
             {
                 player_score.GetComponent<Text>().text = n.ToString();
+            }
+            else {
+                StartCoroutine(showTLE());
             }
             Take_picture_buttom.SetActive(false);
             ready_buttom.SetActive(true);
             level_num.GetComponent<Text>().text = "2";
             timer = 0;
             takeway = true;
-            time_left.GetComponent<Text>().text = "0";
+            time_left.GetComponent<Text>().text = "00";
             level = 2;
+            task_msg.GetComponent<Text>().text = "Second level is Finding 5 Objects Are you still Ready :''D?? take care it become harder as long as you go";
+            task_msg.GetComponent<Text>().fontSize = 60;
         }
-
+        else if (s == "2") {
+            if (obj_num <= 5)
+            {
+                obj_num++;
+                if (timer > 0)
+                {
+                    bool ans = evaluate_level_two();
+                    StartCoroutine(showAns(ans));
+                }
+                else {
+                    StartCoroutine(showTLE());
+                }
+                timer = 0;
+                takeway = true;
+                time_left.GetComponent<Text>().text = "00";
+                task_msg.GetComponent<Text>().text = get_task_of_second_level();
+                timer = 100;
+                takeway = false;
+            }
+            else {
+                float tmp = acc_num / 5 * 20;
+                curr_score = curr_score+tmp;
+                player_score.GetComponent<Text>().text = curr_score.ToString();
+                Take_picture_buttom.SetActive(false);
+                ready_buttom.SetActive(true);
+                level_num.GetComponent<Text>().text = "3";
+                timer = 0;
+                takeway = true;
+                time_left.GetComponent<Text>().text = "00";
+                level = 3;
+                task_msg.GetComponent<Text>().text = "Third level fe albatee5 a8reflak :''D ??";
+            }
+        }
 
     }
 
@@ -241,20 +332,38 @@ public class CameraController : MonoBehaviour
     {
         List<string> names = new List<string>();
         names.Add("Red"); names.Add("Green"); names.Add("White");
-        return "Search for " + names[random] + " color please yazmili";
+        return "Search for " + names[random] + " color please!!";
+    }
+    public string get_task_of_second_level()
+    {
+        random2++;
+        random2 = random2 % num_of_options;
+        curr_obj = array_of_avilable_options[random2];
+        return "Search for " + array_of_avilable_options[random2] + " please :) ";
+       
     }
     public float evaluate_level_one()
     {
-
         var rawImage = backCam.GetPixels32();
         float n = 0;
         if (random == 0) n = DetectRed();
         else if (random == 1) n = DetectGreen();
         else n = DetectWhite();
         Debug.Log(n);
-
         return n;
+    }
 
+    public bool evaluate_level_two() {
+        int num_of_frames = 4;
+        for (int k = 0; k < num_of_frames; k++) {
+            TFClassify();
+            for (int i = 0; i < 3; i++)
+            {
+                if (curr_obj == array_of_objects[i])
+                    return true;
+            }
+        }
+        return false;
     }
     public float DetectRed()
     {
@@ -414,6 +523,7 @@ public class CameraController : MonoBehaviour
                     for (int i = 0; i < 3; i++)
                     {
                         this.uiText.text += probabilities[i].Key + ": " + string.Format("{0:0.000}%", probabilities[i].Value) + "\n";
+                        array_of_objects[i] = probabilities[i].Key;
                     }
                 }
 
