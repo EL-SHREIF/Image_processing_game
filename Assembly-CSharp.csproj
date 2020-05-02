@@ -472,18 +472,22 @@
     <Compile Include="Assets\OpenCV+Unity\Demo\Scripts\WebCamera.cs" />
     <Compile Include="Assets\OpenCV+Unity\Demo\Tracking\TrackingScript.cs" />
     <Compile Include="Assets\scripts\CameraController.cs" />
+    <Compile Include="Assets\scripts\Classifier.cs" />
     <Compile Include="Assets\scripts\OpenCVFaceDetection.cs" />
+    <Compile Include="Assets\scripts\TextureTools.cs" />
     <Compile Include="Assets\scripts\script_to_move_between_senes.cs" />
     <None Include="Assets\OpenCV+Unity\Demo\Face_Detector\haarcascade_eye.xml" />
     <None Include="Assets\OpenCV+Unity\Documentation\Third-Party Licenses.txt" />
     <None Include="Assets\lbpcascade_frontalface.xml" />
     <None Include="Assets\OpenCV+Unity\smcs.rsp" />
     <None Include="Assets\OpenCV+Unity\gmcs.rsp" />
+    <None Include="Assets\Resources\mobilenet_v2_labels.txt" />
     <None Include="Assets\mcs.rsp" />
     <None Include="Assets\OpenCV+Unity\Documentation\OpenCV+Unity_Notes.txt" />
     <None Include="Assets\OpenCV+Unity\Demo\Face_Detector\haarcascade_eye_tree_eyeglasses.xml" />
     <None Include="Assets\OpenCV+Unity\Demo\Face_Recognizer\face-recognizer.xml" />
     <None Include="Assets\OpenCV+Unity\Demo\Face_Detector\haarcascade_frontalface_default.xml" />
+    <None Include="Assets\Resources\tiny_yolo_labels.txt" />
     <None Include="Assets\OpenCV+Unity\mcs.rsp" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
@@ -565,6 +569,27 @@
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Editor">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="MacBLAS">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/MacBLAS.dll</HintPath>
+    </Reference>
+    <Reference Include="Barracuda-editor">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Barracuda-editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Barracuda">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/Barracuda.dll</HintPath>
+    </Reference>
+    <Reference Include="iOSBLAS">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/iOSBLAS.dll</HintPath>
+    </Reference>
+    <Reference Include="BurstBLAS">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/ScriptAssemblies/BurstBLAS.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>D:/Unity Setup (2)/2019.3.9f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -736,6 +761,12 @@
     </Reference>
     <Reference Include="UnityEngine.XRModule">
       <HintPath>D:/Unity Setup (2)/2019.3.9f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/PackageCache/com.unity.burst@1.1.1/Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf">
+      <HintPath>C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Library/PackageCache/com.unity.barracuda@0.4.0-preview/Barracuda/Plugins/ProtoBuffer/Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>D:/Unity Setup (2)/2019.3.9f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

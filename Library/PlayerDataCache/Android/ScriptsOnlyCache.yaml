@@ -2,7 +2,10 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - CameraController
+    - Classifier
     - script_to_move_between_senes
+    Barracuda.dll:
+    - Barracuda.NNModel
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.Tilemap.Editor.dll:
@@ -43,30 +46,36 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 49
+      Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11230}
+      Script: {instanceID: 11232}
     - Class: 114
-      Script: {instanceID: 11578}
+      Script: {instanceID: 11580}
     - Class: 114
-      Script: {instanceID: 11652}
+      Script: {instanceID: 11654}
     - Class: 114
-      Script: {instanceID: 12010}
+      Script: {instanceID: 12012}
     - Class: 114
-      Script: {instanceID: 12474}
+      Script: {instanceID: 12476}
     - Class: 114
-      Script: {instanceID: 13358}
+      Script: {instanceID: 13360}
     - Class: 114
-      Script: {instanceID: 13398}
+      Script: {instanceID: 13400}
     - Class: 114
-      Script: {instanceID: 14316}
+      Script: {instanceID: 14318}
     - Class: 114
-      Script: {instanceID: 14932}
+      Script: {instanceID: 14934}
     - Class: 114
-      Script: {instanceID: 15090}
+      Script: {instanceID: 15092}
+    - Class: 114
+      Script: {instanceID: 17086}
+    - Class: 114
+      Script: {instanceID: 17774}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -96,30 +105,38 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 49
+      Script: {instanceID: 0}
+    - Class: 72
+      Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
+    - Class: 109
+      Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11230}
+      Script: {instanceID: 11232}
     - Class: 114
-      Script: {instanceID: 11578}
+      Script: {instanceID: 11580}
     - Class: 114
-      Script: {instanceID: 11652}
+      Script: {instanceID: 11654}
     - Class: 114
-      Script: {instanceID: 12474}
+      Script: {instanceID: 12476}
     - Class: 114
-      Script: {instanceID: 13324}
+      Script: {instanceID: 13326}
     - Class: 114
-      Script: {instanceID: 13358}
+      Script: {instanceID: 13360}
     - Class: 114
-      Script: {instanceID: 13542}
+      Script: {instanceID: 13544}
     - Class: 114
-      Script: {instanceID: 13716}
+      Script: {instanceID: 13718}
     - Class: 114
-      Script: {instanceID: 14316}
+      Script: {instanceID: 14318}
     - Class: 114
-      Script: {instanceID: 15090}
+      Script: {instanceID: 15092}
+    - Class: 114
+      Script: {instanceID: 17086}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -637,7 +654,7 @@ ScriptsOnlyBuild:
     className: PlayModeRunnerCallback
   - hash:
       serializedVersion: 2
-      Hash: c95f3ec89051f98635405a5ef98ec8da
+      Hash: c09b4bb9cc0cb3c62500fc0edc8d4cfe
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: CameraController
@@ -719,8 +736,20 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 422f48e4fe97392f35c9dde63be9e292
+    assemblyName: Barracuda.dll
+    namespaceName: Barracuda
+    className: NNModel
+  - hash:
+      serializedVersion: 2
+      Hash: c050dd5e3c73d3f105bd1c8f66eb36a5
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Classifier
   platform: 13
   scenePathNames:
   - Assets/Choose_mode_scene.unity
   - Assets/Camer_Scene.unity
-  playerPath: C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/Final2.apk
+  playerPath: C:/Users/SHIKO/Desktop/delete_me/New_Game/Image_processing_game/FinalObjectDetectionTrail.apk
