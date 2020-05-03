@@ -1,139 +1,153 @@
-﻿//shiko level(2)
-using Barracuda;
-using TFClassify;
-using System.Linq;
-using System.Threading.Tasks;
-//============================================
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
+// including libraries for openCV in C#
 using OpenCvSharp;
 using OpenCvSharp.Aruco;
 using OpenCvSharp.ML;
 using OpenCvSharp.Tracking;
 
-
-
+// include the libraries that will be used in Object Detection Part in level 2
+using Barracuda;
+using TFClassify;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Globalization;
 
 public class CameraController : MonoBehaviour
 {
-    private bool camAvl;
-    public WebCamTexture backCam;
-    private Texture d_backGround;
-
-    public RawImage background;
-    public AspectRatioFitter fit;
-
-    float curr_score = 0;
-
-    private bool go_back_check = false;
-    int camidx = 0;
-    string nick_name = "";
-
-    //Level 2 Variables======================================================
-    private float cameraScale = 1f;
-    private float shiftX = 0f;
-    private float shiftY = 0f;
-    private float scaleFactor = 1;
-
-    private static Texture2D boxOutlineTexture;
-    private static GUIStyle labelStyle;
-   
-    public Classifier classifier;
-    private bool isWorking = false;
-    public Text uiText;
-    int level;
-    int obj_num = 1;
-    string[] array_of_objects= new string[3];
-
-    public GameObject AC;
-    public GameObject WA;
-    public GameObject TLE;
-
-    int acc_num = 0;
-    const int num_of_options = 5;
-    string curr_obj = "";
-    string[] array_of_avilable_options= new string[num_of_options] { "baseball","mouse, computer mouse","remote control, remote","electric fan, blower","analog clock"};
-    int random2 = 1;
-    //=======================================================================
-
-    //GUI data to view and hide==============================================
+    /*
+        In this class we have everything that connect from the backend to the frontend    
+    */
+    
+    //UI part variables==========================================================
+    //each one of this variables connected to part in the frontend
     public GameObject level_num;
     public GameObject time_left;
     public GameObject player_name;
     public GameObject player_score;
     public GameObject un_imp;
-    public GameObject un_imp2; 
+    public GameObject un_imp2;
     public AspectRatioFitter fitter;
-
     public GameObject task_panel;
     public GameObject task_msg;
     public GameObject ready_buttom;
     public GameObject Take_picture_buttom;
-    //=======================================================================
+    public GameObject AC;
+    public GameObject WA;
+    public GameObject TLE;
+    //============================================================================
 
-    public bool takeway = true;
-    public int timer = 30;
-    string name = "";
 
+    //Camera Variables ===========================================================
+    //This part to access mobile phone camera or web cam in laptop and open it
+    private bool camAvl;
+    int camidx = 0; // as their is devices that has more than one camera
+    public WebCamTexture backCam;
+    private Texture d_backGround;
+    public RawImage background;
+    public AspectRatioFitter fit;
+    //next variables to control sizes of the camera object
+    private float cameraScale = 1f;
+    private float shiftX = 0f;
+    private float shiftY = 0f;
+    private float scaleFactor = 1;
+    //============================================================================
+
+
+    //Game Logic Variables =======================================================
+    //This part of variables is for the game backend logic that put rules
+    float curr_score = 0;                      //The score of the player
+    int level;                                 //The current level we are in 
+    string nick_name = "";                     //The nick name of the player
+    // The next 2 variables is to control the Timer
+    public bool takeway = true;                //To restart the timer you should
+    public int timer = 30;                     //set these 2 variables
+    // The next 2 variables to randomize the adventure of playing each time
     int random = 1;
+    int random2 = 1;
+    //the next variable to control moving between differnt Scense
+    private bool go_back_check = false;
+    //============================================================================
+
+
+    //Level two special Variables=================================================
+    private static Texture2D boxOutlineTexture;
+    private static GUIStyle labelStyle;
+    public Classifier classifier;        // instance of the classifier that we use
+    private bool isWorking = false;        
+    int obj_num = 1;  // This to make level 2 consist of 5 parts
+    int acc_num = 0;  // This to calculate number of times player get accepted image
+    // The next array to save predictions from the Classifier
+    string[] array_of_objects= new string[3];
+    //The next 3 variables is for the object that we can detect with our model
+    string curr_obj = ""; // which object we want to search for
+    const int num_of_options = 18;
+    string[] array_of_avilable_options= new string[num_of_options] { "monitor", "modem",
+          "kimono", "cleaver, meat cleaver, chopper", "sunglasses, dark glasses,shades",
+          "prayer rug, prayer mat" , "joystick" , "perfume, essence" , "cucumber, cuke",
+          "iPod" , "orange" , "folding chair" , "computer keyboard, keypad" ,"baseball",
+          "mouse, computer mouse","remote control, remote","electric fan, blower","analog clock"};
+    // The next variable is just for debgging the results
+    public Text uiText;
+    //============================================================================
+
+    // Please put comment here ###################################################
     Mat draw = new Mat();
     Point last = new Point();
+    //============================================================================
 
     private void Start()
     {
-        name = PlayerPrefs.GetString("player_name");
-        d_backGround = background.texture;
+        // This function is the initial function that called when you make new inistance
+        // It's like a constructor in c++ code
 
+        nick_name = PlayerPrefs.GetString("player_name");  //get the name from last Scene
+        level = 1;                                         //make player start from level 1
+
+        // Select Random Variables for the player new Adventure
         random = Random.Range(0, 20000) % 3;
         random2 = Random.Range(0, 20000) % num_of_options;
+        //===============================================================
+
+        // Open the Camera in the player Devices
+        d_backGround = background.texture;
         backCam = new WebCamTexture(WebCamTexture.devices[camidx].name, Screen.width, Screen.height);
         background.texture = backCam;
         backCam.Play();
-        
         camAvl = true;
+        //===============================================================
 
+        // Initialize the Variables that level 2 will need when its start
         boxOutlineTexture = new Texture2D(1, 1);
         boxOutlineTexture.SetPixel(0, 0, Color.red);
         boxOutlineTexture.Apply();
-
         labelStyle = new GUIStyle();
         labelStyle.fontSize = 50;
         labelStyle.normal.textColor = Color.red;
-
-        level_num.SetActive(false);
-        player_name.SetActive(false);
-        time_left.SetActive(false);
-        un_imp.SetActive(false);
-        un_imp2.SetActive(false);
-        AC.SetActive(false);
-        WA.SetActive(false);
-        TLE.SetActive(false);
-        player_score.SetActive(false);
-        //task_panel.SetActive(false);
-        Take_picture_buttom.SetActive(false);
-        task_msg.GetComponent<Text>().text = "First level is searching for Colors Are you Ready??";
-        task_msg.GetComponent<Text>().fontSize = 70;
-        draw = new OpenCvSharp.Mat(backCam.width, backCam.height, MatType.CV_8UC3, new Scalar(0, 0, 0));
-
-        level = 1;
         CalculateShift(Classifier.IMAGE_SIZE);
+        //===============================================================
+
+        Enable_Ready_and_Task_only("First level is searching for Colors Are you Ready??", 70);
+
+        // Please put comment here #####################################################################
+        draw = new OpenCvSharp.Mat(backCam.width, backCam.height, MatType.CV_8UC3, new Scalar(0, 0, 0));        
     }
 
     private void Update()
     {
-
-        if (go_back_check)
-        {
+        // This function called each new Frame automatically 
+        
+        if (go_back_check)    // Control moving between Scenes
             return;
-        }
 
         if (!camAvl)
             return;
 
+        // Control How the Camera view presented in the Device Screen====================
         float ratio = (float)backCam.width / (float)backCam.height;
         fitter.aspectRatio = ratio;
 
@@ -143,19 +157,22 @@ public class CameraController : MonoBehaviour
 
         int orient = -backCam.videoRotationAngle;
         background.rectTransform.localEulerAngles = new Vector3(0, 0, orient);
-
         if (orient != 0)
         {
             this.cameraScale = (float)Screen.width / Screen.height;
         }
+        //=================================================================================
 
+        //This is to call the function of the Timer to make the CountDown==================
         if (takeway == false && timer >= 1)
         {
             time_left.GetComponent<Text>().text = timer.ToString();
             StartCoroutine(Countdown());
         }
+        //=================================================================================
 
-        //remove this when you finish development 
+        //Debuging Part====================================================================
+        //remove this when you finish development please 
         if (level == 2) {
             TFClassify();
         }
@@ -168,12 +185,12 @@ public class CameraController : MonoBehaviour
             background.texture = updatedTexture;
             DrawScreen();
         }
-        //========================================
+        //================================================================================
     }
-
 
     public void go_back()
     {
+        // This Function is to Control Back button in the UI 
         go_back_check = true;
         backCam.Stop();
         backCam = null;
@@ -183,6 +200,7 @@ public class CameraController : MonoBehaviour
 
     public void swap_camera_clicked()
     {
+        // This to change from front Cam to back cam
         if (WebCamTexture.devices.Length > 0)
         {
             int old_idx = camidx;
@@ -197,12 +215,11 @@ public class CameraController : MonoBehaviour
                 camAvl = true;
             }
         }
-
-
     }
 
     private IEnumerator Countdown()
     {
+        // This function used for the timer
         takeway = true;
         yield return new WaitForSeconds(1);
         if (timer > 0)
@@ -213,6 +230,7 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator showAns(bool ans)
     {
+        //  This function to show the answer to the user is his image accepted or not
         if (ans)
         {
             acc_num++;
@@ -230,11 +248,32 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator showTLE()
     {
+        // This to tell the user that you submit image after the valid time that you have
         TLE.SetActive(true);
         yield return new WaitForSeconds(2);
         TLE.SetActive(false);
     }
 
+    private void CalculateShift(int inputSize)
+    {
+        // This function help in how we view the Camera input in the Device Screen
+        int smallest;
+
+        if (Screen.width < Screen.height)
+        {
+            smallest = Screen.width;
+            this.shiftY = (Screen.height - smallest) / 2f;
+        }
+        else
+        {
+            smallest = Screen.height;
+            this.shiftX = (Screen.width - smallest) / 2f;
+        }
+
+        this.scaleFactor = smallest / (float)inputSize;
+    }
+
+    //================================================= Start Refactoring From Here =============================================================
     public void Ready_to_go()
     {
         string s = level_num.GetComponent<Text>().text;
@@ -252,7 +291,7 @@ public class CameraController : MonoBehaviour
             un_imp2.SetActive(true);
             player_score.SetActive(true);
             Take_picture_buttom.SetActive(true);
-            player_name.GetComponent<Text>().text = name;
+            player_name.GetComponent<Text>().text = nick_name;
             takeway = false;
         }
         else if (s == "2") {
@@ -557,29 +596,12 @@ public class CameraController : MonoBehaviour
     }
 
 
-        //========================================================================================================
-        //========================================================================================================
-        //========================================================================================================
-        //Level 3 Functions  by Shiko
+    //========================================================================================================
+    //========================================================================================================
+    //========================================================================================================
+    //Level 2 Functions  by Shiko
 
-    private void CalculateShift(int inputSize)
-    {
-        int smallest;
-
-        if (Screen.width < Screen.height)
-        {
-            smallest = Screen.width;
-            this.shiftY = (Screen.height - smallest) / 2f;
-        }
-        else
-        {
-            smallest = Screen.height;
-            this.shiftX = (Screen.width - smallest) / 2f;
-        }
-
-        this.scaleFactor = smallest / (float)inputSize;
-    }
-
+    
 
     private void TFClassify()
     {
@@ -637,6 +659,23 @@ public class CameraController : MonoBehaviour
     //========================================================================================================
     //========================================================================================================
     //========================================================================================================
+    private void Enable_Ready_and_Task_only(string s, int font_sz)
+    {
+        // This function to control what to view in the UI
+        level_num.SetActive(false);
+        player_name.SetActive(false);
+        time_left.SetActive(false);
+        un_imp.SetActive(false);
+        un_imp2.SetActive(false);
+        AC.SetActive(false);
+        WA.SetActive(false);
+        TLE.SetActive(false);
+        player_score.SetActive(false);
+        Take_picture_buttom.SetActive(false);
+        task_msg.GetComponent<Text>().text = s;
+        task_msg.GetComponent<Text>().fontSize = font_sz;
+    }
+
 }
 
 
