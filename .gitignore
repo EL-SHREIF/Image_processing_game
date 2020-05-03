@@ -9,6 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/obj/
 .vscode/
 Assets/AssetStoreTools*
 
@@ -78,3 +79,14 @@ Library/ArtifactDB
 Library/ArtifactDB
 Library/ArtifactDB
 .vs/Image_processing_game/v16/.suo
+
+#added by me
+Unity.*
+UnityEditor.UI
+UnityEngine.TestRunner
+UnityEngine.UI
+Assembly-CSharp
+PsdPlugin
+
+#meta of csharp scripts
+/[Aa]ssets/[Ss]cripts/*.meta
