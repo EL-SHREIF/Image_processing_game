@@ -117,7 +117,7 @@ public class CameraController : MonoBehaviour
         Take_picture_buttom.SetActive(false);
         task_msg.GetComponent<Text>().text = "First level is searching for Colors Are you Ready??";
         task_msg.GetComponent<Text>().fontSize = 70;
-        draw = new OpenCvSharp.Mat(backCam.width, backCam.height, MatType.CV_8UC3, new Scalar(0, 0, 0));
+        draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
 
         level = 1;
         CalculateShift(Classifier.IMAGE_SIZE);
@@ -162,7 +162,7 @@ public class CameraController : MonoBehaviour
         else if(level == 3)
         {
             var pixels = backCam.GetPixels32();
-            var updatedTexture = new Texture2D(backCam.width, backCam.height);
+            var updatedTexture = new Texture2D(backCam.height, backCam.width);
             updatedTexture = OpenCvSharp.Unity.MatToTexture(draw);
             updatedTexture.Apply();
             background.texture = updatedTexture;
@@ -550,17 +550,37 @@ public class CameraController : MonoBehaviour
         if (res.Rows == 0 || res.Cols == 0) return;
         center.X = res.At<Point>(0).X;
         center.Y = res.At<Point>(0).Y;
-        if (last.X != 0 && last.Y != 0) Cv2.Line(draw, center, last, new Scalar(255, 0, 0), 4, LineTypes.Filled);
+        if (last.X != 0 && last.Y != 0) Cv2.Line(draw, center, last, new Scalar(255, 0, 0), 10, LineTypes.Filled);
         last = center;
         return;
         
     }
 
+    public int DetectCircle()
+    {
+        CircleSegment[] circles = null;
+        int score = 0;
+        Mat mask = new Mat();
+        Cv2.InRange(draw, new Scalar(10, 0, 0), new Scalar(255, 255, 255), mask);
+        //Cv2.ImShow("mask", mask);
+        for (int i = 1; i <= 10; i++)
+        {
+            circles = Cv2.HoughCircles(mask, OpenCvSharp.HoughMethods.Gradient, 1,
+            10,  // change this value to detect circles with different distances to each other
+            100, 30, 1, 0 // change the last two parameters
+                          // (min_radius & max_radius) to detect larger circles
+            );
+            if (circles.Length > 0) return 10 - i + 1;
 
-        //========================================================================================================
-        //========================================================================================================
-        //========================================================================================================
-        //Level 3 Functions  by Shiko
+        }
+        return score;
+    }
+
+
+    //========================================================================================================
+    //========================================================================================================
+    //========================================================================================================
+    //Level 3 Functions  by Shiko
 
     private void CalculateShift(int inputSize)
     {
