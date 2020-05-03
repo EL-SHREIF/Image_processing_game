@@ -9,6 +9,12 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+.vscode/
+Assets/AssetStoreTools*
+
+# Visual Studio 2015 cache directory
+/.vs/
+
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
