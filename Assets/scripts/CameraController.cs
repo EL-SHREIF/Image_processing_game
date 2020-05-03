@@ -45,7 +45,7 @@ public class CameraController : MonoBehaviour
     //Camera Variables ===========================================================
     //This part to access mobile phone camera or web cam in laptop and open it
     private bool camAvl;
-    int camidx = 0; // as their is devices that has more than one camera
+    int camidx = 0;                                     // as their is devices that has more than one camera
     public WebCamTexture backCam;
     private Texture d_backGround;
     public RawImage background;
@@ -60,12 +60,12 @@ public class CameraController : MonoBehaviour
 
     //Game Logic Variables =======================================================
     //This part of variables is for the game backend logic that put rules
-    float curr_score = 0;                      //The score of the player
-    int level;                                 //The current level we are in 
-    string nick_name = "";                     //The nick name of the player
+    float curr_score = 0;                                //The score of the player
+    int level;                                           //The current level we are in 
+    string nick_name = "";                               //The nick name of the player
     // The next 2 variables is to control the Timer
-    public bool takeway = true;                //To restart the timer you should
-    public int timer = 30;                     //set these 2 variables
+    public bool takeway = true;                          //To restart the timer you should
+    public int timer = 30;                               //set these 2 variables
     // The next 2 variables to randomize the adventure of playing each time
     int random = 1;
     int random2 = 1;
@@ -77,14 +77,14 @@ public class CameraController : MonoBehaviour
     //Level two special Variables=================================================
     private static Texture2D boxOutlineTexture;
     private static GUIStyle labelStyle;
-    public Classifier classifier;        // instance of the classifier that we use
+    public Classifier classifier;                          // instance of the classifier that we use
     private bool isWorking = false;        
-    int obj_num = 1;  // This to make level 2 consist of 5 parts
-    int acc_num = 0;  // This to calculate number of times player get accepted image
+    int obj_num = 1;                                       // This to make level 2 consist of 5 parts
+    int acc_num = 0;                                       // This to calculate number of times player get accepted image
     // The next array to save predictions from the Classifier
     string[] array_of_objects= new string[3];
     //The next 3 variables is for the object that we can detect with our model
-    string curr_obj = ""; // which object we want to search for
+    string curr_obj = "";                                  // which object we want to search for
     const int num_of_options = 18;
     string[] array_of_avilable_options= new string[num_of_options] { "monitor", "modem",
           "kimono", "cleaver, meat cleaver, chopper", "sunglasses, dark glasses,shades",
@@ -274,45 +274,42 @@ public class CameraController : MonoBehaviour
         this.scaleFactor = smallest / (float)inputSize;
     }
 
-    //================================================= Start Refactoring From Here =============================================================
     public void Ready_to_go()
     {
+        // The function that called automatic when you press on Ready button
         string s = level_num.GetComponent<Text>().text;
         if (s == "1")
         {
-            timer = 30;
-            task_msg.GetComponent<Text>().text = get_task_of_first_level();
-            task_msg.GetComponent<Text>().fontSize = 100;
-            ready_buttom.SetActive(false);
-            task_panel.SetActive(true);
-            level_num.SetActive(true);
-            player_name.SetActive(true);
-            time_left.SetActive(true);
-            un_imp.SetActive(true);
-            un_imp2.SetActive(true);
-            player_score.SetActive(true);
-            Take_picture_buttom.SetActive(true);
             player_name.GetComponent<Text>().text = nick_name;
+            timer = 30;
             takeway = false;
+            string str = get_task_of_first_level();
+            Press_Ready_button_helper(str, 100);
         }
         else if (s == "2") {
             timer = 100;
-            task_msg.GetComponent<Text>().text = get_task_of_second_level();
-            task_msg.GetComponent<Text>().fontSize = 80;
-            ready_buttom.SetActive(false);
-            task_panel.SetActive(true);
-            level_num.SetActive(true);
-            player_name.SetActive(true);
-            time_left.SetActive(true);
-            un_imp.SetActive(true);
-            un_imp2.SetActive(true);
-            player_score.SetActive(true);
-            Take_picture_buttom.SetActive(true);
             takeway = false;
+            string str= get_task_of_second_level();
+            Press_Ready_button_helper(str, 80);
         }
-
     }
 
+    private void Press_Ready_button_helper(string s, int font_sz) {
+        // helper function to control the UI
+        task_msg.GetComponent<Text>().text = s;
+        task_msg.GetComponent<Text>().fontSize = font_sz;
+        ready_buttom.SetActive(false);
+        task_panel.SetActive(true);
+        level_num.SetActive(true);
+        player_name.SetActive(true);
+        time_left.SetActive(true);
+        un_imp.SetActive(true);
+        un_imp2.SetActive(true);
+        player_score.SetActive(true);
+        Take_picture_buttom.SetActive(true);
+    }
+
+    //================================================= Start Refactoring From Here =============================================================
     public void Capture_image()
     {
         string s = level_num.GetComponent<Text>().text;
@@ -321,12 +318,10 @@ public class CameraController : MonoBehaviour
             float n = evaluate_level_one();
             curr_score = n;
             if (timer > 0)
-            {
                 player_score.GetComponent<Text>().text = n.ToString();
-            }
-            else {
+            else 
                 StartCoroutine(showTLE());
-            }
+           
             Take_picture_buttom.SetActive(false);
             ready_buttom.SetActive(true);
             level_num.GetComponent<Text>().text = "2";
