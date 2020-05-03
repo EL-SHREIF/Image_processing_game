@@ -95,7 +95,8 @@ public class CameraController : MonoBehaviour
     public Text uiText;
     //============================================================================
 
-    // Please put comment here ###################################################
+    // Draw is a mask for the drawn picture on the screen. last is a point to help draw on the screen,
+    // used to capture the last point to draw a line between it and the current point.
     Mat draw = new Mat();
     Point last = new Point();
     //============================================================================
@@ -134,8 +135,8 @@ public class CameraController : MonoBehaviour
 
         Enable_Ready_and_Task_only("First level is searching for Colors Are you Ready??", 70);
 
-        // Please put comment here #####################################################################
-        draw = new OpenCvSharp.Mat(backCam.width, backCam.height, MatType.CV_8UC3, new Scalar(0, 0, 0));        
+        // initialize the draw mask to be the same of the screen and to have black pixels.
+        draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));        
     }
 
     private void Update()
@@ -179,7 +180,7 @@ public class CameraController : MonoBehaviour
         }
         else if(level == 3)
         {
-            var pixels = backCam.GetPixels32();
+            // Take our draw mask at the current moment and convert it to texture and apply it to the background. 
             var updatedTexture = new Texture2D(backCam.height, backCam.width);
             updatedTexture = OpenCvSharp.Unity.MatToTexture(draw);
             updatedTexture.Apply();
@@ -372,7 +373,7 @@ public class CameraController : MonoBehaviour
         }
 
     }
-
+    // get the random task we choose for level one and output it to the user.
     public string get_task_of_first_level()
     {
         List<string> names = new List<string>();
@@ -387,8 +388,11 @@ public class CameraController : MonoBehaviour
         return "Search for " + array_of_avilable_options[random2] + " please :) ";
        
     }
+    // Helper function to evaluate the score for level one by quering the associated function for the task we have
+    // chosen randomly.
     public float evaluate_level_one()
     {
+
         var rawImage = backCam.GetPixels32();
         float n = 0;
         if (random == 0) n = DetectRed();
@@ -410,84 +414,107 @@ public class CameraController : MonoBehaviour
         }
         return false;
     }
+    // Helper function to detect the amount of red pixels in the captured picture and return a score for the picture.
+    // The score is computed by getting the amount of red pixels in the whole picture and transform this amount to
+    // a percent from 0 to 10.
     public float DetectRed()
     {
-        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);     // capture the picture in the camera.
+        // Transform our picture from RGBA to HSV to better performance in color detection.
         Mat hsv1 = new Mat(), hsv2 = new Mat();
         Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
         Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
-        Mat mask1 = new Mat(), mask2 = new Mat();
+        // Make mask for the red color.
+        Mat mask1 = new Mat();
         Cv2.InRange(hsv2, new Scalar(0, 120, 70), new Scalar(180, 255, 255), mask1);
-        Cv2.InRange(hsv2, new Scalar(160, 120, 70), new Scalar(180, 255, 255), mask2);
-
+        // Loop on all the total mask and get the number of red pixels captured in the mask.
         int redPixels = 0;
         for (int i = 0; i < mask1.Rows; i++)
         {
             for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 && mask1.At<Vec3b>(i, j)[1] != 0 && mask1.At<Vec3b>(i, j)[2] != 0) redPixels++;
         }
+        // Compute the score out of 10 and return it.
         float score = (float)redPixels / (backCam.width * backCam.height);
         score = score * 10;
         return score;
     }
     public float DetectWhite()
     {
-        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam); // capture the picture in the camera.
+         // Transform our picture from RGBA to RGB.
         Mat hsv1 = new Mat(), hsv2 = new Mat();
         Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2RGB);
+        // Make mask for the white color.
         Mat mask1 = new Mat();
         Cv2.InRange(hsv1, new Scalar(200, 200, 0), new Scalar(255, 255, 255), mask1);
-        int redPixels = 0;
+        // Loop on all the total mask and get the number of white pixels captured in the mask.
+        int whitePixels = 0;
         for (int i = 0; i < mask1.Rows; i++)
         {
-            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 || mask1.At<Vec3b>(i, j)[1] != 0 || mask1.At<Vec3b>(i, j)[2] != 0) redPixels++;
+            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 || mask1.At<Vec3b>(i, j)[1] != 0 || mask1.At<Vec3b>(i, j)[2] != 0) whitePixels++;
         }
-        float score = (float)redPixels / (backCam.width * backCam.height);
+        // Compute the score out of 10 and return it.
+        float score = (float)whitePixels / (backCam.width * backCam.height);
         score = score * 10;
         return score;
     }
     public float DetectGreen()
     {
-        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);  // capture the picture in the camera.
+        // Transform our picture from RGBA to HSV to better performance in color detection.
         Mat hsv1 = new Mat(), hsv2 = new Mat();
         Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
         Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
+        // Make mask for the green color.
         Mat mask1 = new Mat();
         Cv2.InRange(hsv2, new Scalar(36, 0, 0), new Scalar(86, 255, 255), mask1);
-        int redPixels = 0;
+        // Loop on all the total mask and get the number of green pixels captured in the mask.
+        int greenPixels = 0;
         for (int i = 0; i < mask1.Rows; i++)
         {
-            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 && mask1.At<Vec3b>(i, j)[1] != 0 && mask1.At<Vec3b>(i, j)[2] != 0) redPixels++;
+            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 && mask1.At<Vec3b>(i, j)[1] != 0 && mask1.At<Vec3b>(i, j)[2] != 0) greenPixels++;
         }
-        float score = (float)redPixels / (backCam.width * backCam.height);
+        // Compute the score out of 10 and return it.
+        float score = (float)greenPixels / (backCam.width * backCam.height);
         score = score * 10;
         return score;
     }
 
-    // the current and best approach for drawing on the screen. The approach detect the red color on the screen and make 
+    // The current and best approach for drawing on the screen. The approach detect the red color on the screen and make 
     // a contour around the red object then draw the min enclosing circle to this contour and draw with this center of
     // the enclosing circle. The drawing approach is get the current center of the contour and the previous center
     // and draw a line between them.
     public void DrawScreen()
     {
-        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
-        Cv2.Flip(img, img, FlipMode.Y);
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam); // Capture the image from the camera.
+        Cv2.Flip(img, img, FlipMode.Y);     // Flip the captured image.
+        // CHange the captured image from RGBA to HSV.
         Mat hsv1 = new Mat(), hsv2 = new Mat();
         Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
         Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
+        // Make a square structuring element with size of 5.
         int elementSize = 5;
         Mat element = new OpenCvSharp.Mat(elementSize, elementSize, MatType.CV_8UC1, 1);
+        // Make a mask for red color on the screen.
         Mat mask = new Mat();
         Cv2.InRange(hsv2, new Scalar(100, 120, 70), new Scalar(150, 255, 255), mask);
+        // Erode the mask with the square structuring element then apply opening on it then dilate it. This is to
+        // enhance the captured red color on the screen and eliminate the noise.
         Cv2.Erode(mask, mask, element, null, 2);
         Cv2.MorphologyEx(mask, mask, MorphTypes.Open, element);
         Cv2.Dilate(mask, mask, element, null, 1);
+        // Add the captured image to the mask.
         Mat res = new Mat();
         Cv2.BitwiseAnd(img, img, res, mask);
+        // Detect the contour of the red color object.
         Point[][] contors = new Point[1][];
         HierarchyIndex[] heirarchy = new HierarchyIndex[1];
         Cv2.FindContours(mask, out contors, out heirarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
         //Cv2.ImShow("contor", mask);
 
+        // We assume our biggest contour is the red object in the screen. so we get the greatest contour. Then 
+        // Get the minimum enclosing circle for the contour then draw with a line between the previous point 
+        // captured and the current point. we draw with the center of the enclosing circle to the contour.
         Point[] mx = new Point[1];
         double cntArea = 0;
         if (contors.Length > 0)
@@ -596,6 +623,7 @@ public class CameraController : MonoBehaviour
         
     }
 
+    // Helper function to detect if there is a circle drawn on the screen.
     public int DetectCircle()
     {
         CircleSegment[] circles = null;
@@ -603,16 +631,15 @@ public class CameraController : MonoBehaviour
         Mat mask = new Mat();
         Cv2.InRange(draw, new Scalar(10, 0, 0), new Scalar(255, 255, 255), mask);
         //Cv2.ImShow("mask", mask);
-        for (int i = 1; i <= 10; i++)
-        {
-            circles = Cv2.HoughCircles(mask, OpenCvSharp.HoughMethods.Gradient, 1,
-            10,  // change this value to detect circles with different distances to each other
-            100, 30, 1, 0 // change the last two parameters
-                          // (min_radius & max_radius) to detect larger circles
-            );
-            if (circles.Length > 0) return 10 - i + 1;
+        
+        circles = Cv2.HoughCircles(mask, OpenCvSharp.HoughMethods.Gradient, 1,
+        10,  // change this value to detect circles with different distances to each other
+        100, 30, 1, 0 // change the last two parameters
+                        // (min_radius & max_radius) to detect larger circles
+        );
+        if (circles.Length > 0) return 10;
 
-        }
+        
         return score;
     }
 
