@@ -87,6 +87,3 @@ UnityEngine.TestRunner
 UnityEngine.UI
 Assembly-CSharp
 PsdPlugin
-
-#meta of csharp scripts
-/[Aa]ssets/[Ss]cripts/*.meta
