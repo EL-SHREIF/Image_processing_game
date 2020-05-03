@@ -117,7 +117,7 @@ public class CameraController : MonoBehaviour
         Take_picture_buttom.SetActive(false);
         task_msg.GetComponent<Text>().text = "First level is searching for Colors Are you Ready??";
         task_msg.GetComponent<Text>().fontSize = 70;
-        draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
+        draw = new OpenCvSharp.Mat(backCam.width, backCam.height, MatType.CV_8UC3, new Scalar(0, 0, 0));
 
         level = 1;
         CalculateShift(Classifier.IMAGE_SIZE);
@@ -155,13 +155,18 @@ public class CameraController : MonoBehaviour
             StartCoroutine(Countdown());
         }
 
-        //DetectCircle();
-
-        //Cv2.ImShow("blank", draw);
-
         //remove this when you finish development 
         if (level == 2) {
             TFClassify();
+        }
+        else if(level == 3)
+        {
+            var pixels = backCam.GetPixels32();
+            var updatedTexture = new Texture2D(backCam.width, backCam.height);
+            updatedTexture = OpenCvSharp.Unity.MatToTexture(draw);
+            updatedTexture.Apply();
+            background.texture = updatedTexture;
+            DrawScreen();
         }
         //========================================
     }
@@ -417,7 +422,56 @@ public class CameraController : MonoBehaviour
         score = score * 10;
         return score;
     }
-    public bool DetectCircle()
+
+    // the current and best approach for drawing on the screen. The approach detect the red color on the screen and make 
+    // a contour around the red object then draw the min enclosing circle to this contour and draw with this center of
+    // the enclosing circle. The drawing approach is get the current center of the contour and the previous center
+    // and draw a line between them.
+    public void DrawScreen()
+    {
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
+        Cv2.Flip(img, img, FlipMode.Y);
+        Mat hsv1 = new Mat(), hsv2 = new Mat();
+        Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2BGR);
+        Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.BGR2HSV);
+        int elementSize = 5;
+        Mat element = new OpenCvSharp.Mat(elementSize, elementSize, MatType.CV_8UC1, 1);
+        Mat mask = new Mat();
+        Cv2.InRange(hsv2, new Scalar(100, 120, 70), new Scalar(150, 255, 255), mask);
+        Cv2.Erode(mask, mask, element, null, 2);
+        Cv2.MorphologyEx(mask, mask, MorphTypes.Open, element);
+        Cv2.Dilate(mask, mask, element, null, 1);
+        Mat res = new Mat();
+        Cv2.BitwiseAnd(img, img, res, mask);
+        Point[][] contors = new Point[1][];
+        HierarchyIndex[] heirarchy = new HierarchyIndex[1];
+        Cv2.FindContours(mask, out contors, out heirarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+        //Cv2.ImShow("contor", mask);
+
+        Point[] mx = new Point[1];
+        double cntArea = 0;
+        if (contors.Length > 0)
+        {
+            for (int i = 0; i < contors.Length; i++)
+            {
+                if (cntArea <= Cv2.ContourArea(contors[i]))
+                {
+                    mx = contors[i];
+                    cntArea = Cv2.ContourArea(contors[i]);
+                }
+            }
+            Point2f center = new Point2f();
+            float radius = 0;
+            Cv2.MinEnclosingCircle(mx, out center, out radius);
+            if (last.X != 0 && last.Y != 0) Cv2.Line(draw, center, last, new Scalar(255, 0, 0), 4, LineTypes.Filled);
+            last = center;
+        }
+    }
+
+    // Old approach function for drawing on the screen but it was not so smooth in drawing. The approach was detecting 
+    // a red color object on the screen and make a circle around it and draw with the center of this circle but 
+    // the sircle wasn't stable aroun the object so was drawing in zigzag a little.
+    public bool DrawScreenOld1()
     {
         Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
         Cv2.Flip(img, img, FlipMode.Y);
@@ -449,7 +503,6 @@ public class CameraController : MonoBehaviour
         {
             CircleSegment c = circles[i];
             Point center = c.Center;
-            fill(center.X, center.Y);
             if (last.X != 0 && last.Y != 0) Cv2.Line(draw, center, last, new Scalar(255, 0, 0), 4, LineTypes.Filled);
             last = center;
 
@@ -462,27 +515,52 @@ public class CameraController : MonoBehaviour
         //Cv2.ImShow("detected circles", img);
         return true;
     }
-    public void fill(int x, int y)
+    // Old approach function for drawing on the screen but it was not so smooth in drawing. The approach was to detect
+    // a certain color in a certain point we tell the user about on the screen the color of the object the user have put
+    // in this part of the picture then be tracked and draw with it, by getting the new position and the last position
+    // and draw a line between them.
+    public void DrawScreenOld2()
     {
-        draw.Set<Scalar>(y, x, new Scalar(255, 0, 0));
-        for (int i = 0; i < 4; i++)
+        int downCnt = 30;
+        Vec3b centerPoint = new Vec3b();
+        Mat img = OpenCvSharp.Unity.TextureToMat(backCam);
+        Cv2.Flip(img, img, FlipMode.Y);
+        Cv2.MedianBlur(img, img, 21);
+        Mat hsv1 = new Mat(), mask1 = new Mat();
+        Cv2.CvtColor(img, hsv1, OpenCvSharp.ColorConversionCodes.RGBA2RGB);
+        //Cv2.CvtColor(hsv1, hsv2, OpenCvSharp.ColorConversionCodes.RGB2HSV);
+        if (downCnt > 0)
         {
-            draw.Set<Scalar>(y - i, x - i, new Scalar(255, 0, 0));
-            draw.Set<Scalar>(y + i, x + i, new Scalar(255, 0, 0));
-            draw.Set<Scalar>(y - i, x + i, new Scalar(255, 0, 0));
-            draw.Set<Scalar>(y + i, x - i, new Scalar(255, 0, 0));
-            draw.Set<Scalar>(y, x - i, new Scalar(255, 0, 0));
-            draw.Set<Scalar>(y, x + i, new Scalar(255, 0, 0));
-            draw.Set<Scalar>(y + i, x, new Scalar(255, 0, 0));
-            draw.Set<Scalar>(y - i, x, new Scalar(255, 0, 0));
+            Cv2.Circle(img, 50, 50, 5, new Scalar(0, 100, 100), 3, OpenCvSharp.LineTypes.AntiAlias);
+            Cv2.ImShow("blank2", img);
+            centerPoint = hsv1.Get<Vec3b>(50, 50);
+            //Debug.Log(centerPoint);
+            return;
         }
 
+        //Debug.Log(centerPoint.ToString());
+
+        Cv2.InRange(hsv1, new Scalar(Mathf.Max(0, centerPoint[0] - 5), Mathf.Max(centerPoint[1] - 5, 0), Mathf.Max(centerPoint[2] - 5, 0)), new Scalar(Mathf.Min(254, centerPoint[0] + 5), Mathf.Min(centerPoint[1] + 5, 254), Mathf.Min(centerPoint[2] + 5, 254)), mask1);
+
+        Point center = new Point();
+        int elementSize = 2;
+        Mat element = Cv2.GetStructuringElement(OpenCvSharp.MorphShapes.Ellipse, new Size(elementSize+1, elementSize+1), new Point(elementSize, elementSize));
+        Cv2.Erode(mask1, mask1, element, null, 1);
+        Mat res = mask1.FindNonZero();
+        if (res.Rows == 0 || res.Cols == 0) return;
+        center.X = res.At<Point>(0).X;
+        center.Y = res.At<Point>(0).Y;
+        if (last.X != 0 && last.Y != 0) Cv2.Line(draw, center, last, new Scalar(255, 0, 0), 4, LineTypes.Filled);
+        last = center;
+        return;
+        
     }
 
-    //========================================================================================================
-    //========================================================================================================
-    //========================================================================================================
-    //Level 3 Functions  by Shiko
+
+        //========================================================================================================
+        //========================================================================================================
+        //========================================================================================================
+        //Level 3 Functions  by Shiko
 
     private void CalculateShift(int inputSize)
     {
