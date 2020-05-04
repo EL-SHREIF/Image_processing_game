@@ -38,4 +38,17 @@ public class script_to_move_between_senes : MonoBehaviour
             SceneManager.LoadScene(1, LoadSceneMode.Single);
         }
     }
+    public void moveToLobby()
+    {
+        string nick_name = the_text.GetComponent<InputField>().text;
+        PlayerPrefs.SetString("player_name", nick_name);
+        if (nick_name.Length < 3 || nick_name.Length > 6)
+        {
+            the_panel.SetActive(true);
+        }
+        else
+        {
+            SceneManager.LoadScene(2, LoadSceneMode.Single);
+        }
+    }
 }
