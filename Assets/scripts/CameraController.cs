@@ -471,7 +471,8 @@ public class CameraController : MonoBehaviour
                 }
                 //calculate the score and set the UI and make it ready for level 3
                 float tmp = ((level3Score1 + level3Score2 + level3Score3) / 30) * 10;
-                player_score.GetComponent<Text>().text = tmp.ToString();
+                curr_score = curr_score + tmp;
+                player_score.GetComponent<Text>().text = curr_score.ToString();
                 Take_picture_buttom.SetActive(false);
                 ready_buttom.SetActive(true);
                 level_num.GetComponent<Text>().text = "3";
@@ -481,6 +482,12 @@ public class CameraController : MonoBehaviour
                 level = 3;
                 task_msg.GetComponent<Text>().text = "your score for level 3";
                 task_msg.GetComponent<Text>().fontSize = 50;
+                PlayerPrefs.SetString("player_score", curr_score.ToString());
+                go_back_check = true;
+                backCam.Stop();
+                backCam = null;
+                background.texture = null;
+                SceneManager.LoadScene(2, LoadSceneMode.Single);
             }
             
         }
