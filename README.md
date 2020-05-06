@@ -12,3 +12,5 @@ This is a game that use the mobile camera to help you spending good time by havi
 1) We use openCV for Csharp in unity
 
 2) We use Tensorflow sharp for unity
+
+<img src="https://github.com/EL-SHREIF/Image_processing_game/master/items/qd.gif">
