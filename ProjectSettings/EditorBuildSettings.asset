@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Camer_Scene.unity
     guid: 40c98cd2af92b2e4d8dd66865730bc7e
+  - enabled: 1
+    path: Assets/Final_Scene.unity
+    guid: 84c22e79b95748d4ea8a005c99c10d76
   m_configObjects: {}
