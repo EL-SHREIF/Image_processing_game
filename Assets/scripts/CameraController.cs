@@ -575,7 +575,7 @@ public class CameraController : MonoBehaviour
         int redPixels = 0;
         for (int i = 0; i < mask1.Rows; i++)
         {
-            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 && mask1.At<Vec3b>(i, j)[1] != 0 && mask1.At<Vec3b>(i, j)[2] != 0) redPixels++;
+            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 || mask1.At<Vec3b>(i, j)[1] != 0 || mask1.At<Vec3b>(i, j)[2] != 0) redPixels++;
         }
         // Compute the score out of 10 and return it.
         float score = (float)redPixels / (backCam.width * backCam.height);
@@ -616,7 +616,7 @@ public class CameraController : MonoBehaviour
         int greenPixels = 0;
         for (int i = 0; i < mask1.Rows; i++)
         {
-            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 && mask1.At<Vec3b>(i, j)[1] != 0 && mask1.At<Vec3b>(i, j)[2] != 0) greenPixels++;
+            for (int j = 0; j < mask1.Cols; j++) if (mask1.At<Vec3b>(i, j)[0] != 0 || mask1.At<Vec3b>(i, j)[1] != 0 || mask1.At<Vec3b>(i, j)[2] != 0) greenPixels++;
         }
         // Compute the score out of 10 and return it.
         float score = (float)greenPixels / (backCam.width * backCam.height);
