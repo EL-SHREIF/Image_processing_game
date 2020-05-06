@@ -8,14 +8,20 @@ using System.Text.RegularExpressions;
 
 public class Classifier : MonoBehaviour
 {
+    /*
+        In this class we have The classifier that use a pre-trained model and we select some
+        objects from home rooms according to quarntine situation to be used from the model
+    */
+
+    //This part that set the variables of the model
     public NNModel modelFile;
     public TextAsset labelsFile;
-
     public const int IMAGE_SIZE = 224;
     private const int IMAGE_MEAN = 127;
     private const float IMAGE_STD = 127.5f;
     private const string INPUT_NAME = "input";
     private const string OUTPUT_NAME = "MobilenetV2/Predictions/Reshape_1";
+    //====================================================================
 
     private IWorker worker;
     private string[] labels;
@@ -23,9 +29,12 @@ public class Classifier : MonoBehaviour
 
     public void Start()
     {
+        //lodaing the model with the labels needed in detection
         this.labels = Regex.Split(this.labelsFile.text, "\n|\r|\r\n")
             .Where(s => !String.IsNullOrEmpty(s)).ToArray();
+
         var model = ModelLoader.Load(this.modelFile);
+        
         this.worker = WorkerFactory.CreateWorker(WorkerFactory.Type.ComputePrecompiled, model);
     }
 
@@ -33,14 +42,13 @@ public class Classifier : MonoBehaviour
     private int i = 0;
     public IEnumerator Classify(Color32[] picture, System.Action<List<KeyValuePair<string, float>>> callback)
     {
+        //we use this function in detecting from image
         var map = new List<KeyValuePair<string, float>>();
-
         using (var tensor = TransformInput(picture, IMAGE_SIZE, IMAGE_SIZE))
         {
             var inputs = new Dictionary<string, Tensor>();
             inputs.Add(INPUT_NAME, tensor);
             var enumerator = this.worker.ExecuteAsync(inputs);
-
             while (enumerator.MoveNext())
             {
                 i++;
@@ -65,6 +73,7 @@ public class Classifier : MonoBehaviour
 
     public static Tensor TransformInput(Color32[] pic, int width, int height)
     {
+        // this is a helper image processing part to make the image ready for the model
         float[] floatValues = new float[width * height * 3];
 
         for (int i = 0; i < pic.Length; ++i)

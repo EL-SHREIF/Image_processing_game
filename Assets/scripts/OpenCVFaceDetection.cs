@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 /*
+ * 
+ * This file has old apprach we used in detectio
+ * 
 public class OpenCVFaceDetection : MonoBehaviour
 {
     public static List<Vector2> NormalizedFacePositions { get; private set; }

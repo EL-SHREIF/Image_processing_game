@@ -173,12 +173,13 @@ public class CameraController : MonoBehaviour
         }
         //=================================================================================
 
+        //To help in high number of frames detection
+        if (level == 2) TFClassify();
+
         //Debuging Part====================================================================
-        //remove this when you finish development please 
-        if (level == 2) {
-            TFClassify();
-        }
-        else if(level == 3)
+        //remove this when you finish development please
+
+        else if(level == 3)// added after you press ready button
         {
             // Take our draw mask at the current moment and convert it to texture and apply it to the background. 
             var updatedTexture = new Texture2D(backCam.height, backCam.width);
@@ -287,11 +288,15 @@ public class CameraController : MonoBehaviour
             string str = get_task_of_first_level();
             Press_Ready_button_helper(str, 100);
         }
-        else if (s == "2") {
+        else if (s == "2")
+        {
             timer = 100;
             takeway = false;
-            string str= get_task_of_second_level();
-            Press_Ready_button_helper(str, 80);
+            string str = get_task_of_second_level();
+            Press_Ready_button_helper(str, 70);
+        }
+        else if (s == "3") { 
+            
         }
     }
 
@@ -309,32 +314,36 @@ public class CameraController : MonoBehaviour
         player_score.SetActive(true);
         Take_picture_buttom.SetActive(true);
     }
-
-    //================================================= Start Refactoring From Here =============================================================
     public void Capture_image()
     {
+        // This function is called when you capture new image
         string s = level_num.GetComponent<Text>().text;
+        // to know which level
         if (s == "1")
         {
+            //get the score
             float n = evaluate_level_one();
             curr_score = n;
             if (timer > 0)
                 player_score.GetComponent<Text>().text = n.ToString();
             else 
                 StartCoroutine(showTLE());
-           
+            // Update the UI for level 2
+            level = 2;
             Take_picture_buttom.SetActive(false);
             ready_buttom.SetActive(true);
             level_num.GetComponent<Text>().text = "2";
+            task_msg.GetComponent<Text>().text = "Second level is Finding 5 Objects Are you still Ready :''D?? take care it become harder as long as you go";
+            task_msg.GetComponent<Text>().fontSize = 50;
             timer = 0;
             takeway = true;
             time_left.GetComponent<Text>().text = "00";
-            level = 2;
-            task_msg.GetComponent<Text>().text = "Second level is Finding 5 Objects Are you still Ready :''D?? take care it become harder as long as you go";
-            task_msg.GetComponent<Text>().fontSize = 60;
+            //====================================================================
+            
         }
         else if (s == "2") {
-            if (obj_num <= 5)
+            // if level 2 you will need to loop 5 times
+            if (obj_num < 5)
             {
                 obj_num++;
                 if (timer > 0)
@@ -353,6 +362,13 @@ public class CameraController : MonoBehaviour
                 takeway = false;
             }
             else {
+                if (timer > 0){
+                    bool ans = evaluate_level_two();
+                    StartCoroutine(showAns(ans));
+                }
+                else
+                    StartCoroutine(showTLE());
+                //calculate the score and set the UI and make it ready for level 3
                 float tmp = acc_num / 5 * 20;
                 curr_score = curr_score+tmp;
                 player_score.GetComponent<Text>().text = curr_score.ToString();
@@ -363,32 +379,37 @@ public class CameraController : MonoBehaviour
                 takeway = true;
                 time_left.GetComponent<Text>().text = "00";
                 level = 3;
-                task_msg.GetComponent<Text>().text = "Third level fe albatee5 a8reflak :''D ??";
+                task_msg.GetComponent<Text>().text = "Bring Red object as in level 3 you will need to draw with it" +
+                    "Take Care it's challenging part";
+                task_msg.GetComponent<Text>().fontSize = 50;
+                //======================================================================
             }
         }
 
     }
-    // get the random task we choose for level one and output it to the user.
+    
     public string get_task_of_first_level()
     {
+        // get the random task we choose for level one and output it to the user.
         List<string> names = new List<string>();
         names.Add("Red"); names.Add("Green"); names.Add("White");
         return "Search for " + names[random] + " color please!!";
     }
     public string get_task_of_second_level()
     {
+        // get the random task we choose for level 2 and output it to the user.
         random2++;
         random2 = random2 % num_of_options;
         curr_obj = array_of_avilable_options[random2];
-        string s_out = Get_the_name_of_object(curr_obj);
+        string s_in = curr_obj;
+        string s_out = Get_the_name_of_object(s_in);
         return "Search for " + s_out + " please :)";
-       
     }
-    // Helper function to evaluate the score for level one by quering the associated function for the task we have
-    // chosen randomly.
+ 
     public float evaluate_level_one()
     {
-
+        // Helper function to evaluate the score for level one by quering the associated function for the task we have
+        // chosen randomly.
         var rawImage = backCam.GetPixels32();
         float n = 0;
         if (random == 0) n = DetectRed();
@@ -399,6 +420,8 @@ public class CameraController : MonoBehaviour
     }
 
     public bool evaluate_level_two() {
+        Debug.Log(curr_obj);
+        // Helper function to help in the calculation of the score of level 2 by calling the classifier part
         int num_of_frames = 4;
         for (int k = 0; k < num_of_frames; k++) {
             TFClassify();
@@ -639,34 +662,26 @@ public class CameraController : MonoBehaviour
         return score;
     }
 
-
-    //========================================================================================================
-    //========================================================================================================
-    //========================================================================================================
-    //Level 2 Functions  by Shiko
-
-    
-
     private void TFClassify()
     {
+        // This is the function that will take the frame and make it as a input to the Classifier
         if (this.isWorking)
         {
             return;
         }
-
         this.isWorking = true;
         StartCoroutine(ProcessImage(Classifier.IMAGE_SIZE, result =>
         {
             StartCoroutine(this.classifier.Classify(result, probabilities =>
             {
                 this.uiText.text = string.Empty;
-               
-
+                //after geting the probabilities we need to access them
                 if (probabilities.Any())
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        this.uiText.text += probabilities[i].Key + ": " + string.Format("{0:0.000}%", probabilities[i].Value) + "\n";
+                        //this part is for debugging
+                        //this.uiText.text += probabilities[i].Key + ": " + string.Format("{0:0.000}%", probabilities[i].Value) + "\n";
                         array_of_objects[i] = probabilities[i].Key;
                     }
                 }
@@ -679,6 +694,7 @@ public class CameraController : MonoBehaviour
 
     private IEnumerator ProcessImage(int inputSize, System.Action<Color32[]> callback)
     {
+        //Process the frame that the classifier will take to detect the objects
         yield return StartCoroutine(TextureTools.CropSquare(backCam,
             TextureTools.RectOptions.Center, snap =>
             {
@@ -689,20 +705,19 @@ public class CameraController : MonoBehaviour
     }
     private Texture2D Scale(Texture2D texture, int imageSize)
     {
+        //Helper function to get the best size of the image in detection
+        //We mainly use this helper function from TextureTools library for c#
         var scaled = TextureTools.scaled(texture, imageSize, imageSize, FilterMode.Bilinear);
-
         return scaled;
     }
 
-
     private Color32[] Rotate(Color32[] pixels, int width, int height)
     {
+        //We mainly use this helper function from TextureTools library for c#
         return TextureTools.RotateImageMatrix(
                 pixels, width, height, -90);
     }
-    //========================================================================================================
-    //========================================================================================================
-    //========================================================================================================
+
     private void Enable_Ready_and_Task_only(string s, int font_sz)
     {
         // This function to control what to view in the UI
@@ -722,6 +737,7 @@ public class CameraController : MonoBehaviour
 
     string Get_the_name_of_object(string s_in)
     {
+        //Helper function to get better messages for the UI
         switch (s_in)
         {
             case "modem":
