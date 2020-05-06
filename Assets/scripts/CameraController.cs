@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
@@ -380,7 +380,8 @@ public class CameraController : MonoBehaviour
         random2++;
         random2 = random2 % num_of_options;
         curr_obj = array_of_avilable_options[random2];
-        return "Search for " + array_of_avilable_options[random2] + " please :) ";
+        string s_out = Get_the_name_of_object(curr_obj);
+        return "Search for " + s_out + " please :)";
        
     }
     // Helper function to evaluate the score for level one by quering the associated function for the task we have
@@ -719,6 +720,50 @@ public class CameraController : MonoBehaviour
         task_msg.GetComponent<Text>().fontSize = font_sz;
     }
 
+    string Get_the_name_of_object(string s_in)
+    {
+        switch (s_in)
+        {
+            case "modem":
+                return "Router";
+
+            case "kimono":
+                return "'bel3araby Kanaba'";
+
+            case "cleaver, meat cleaver, chopper":
+                return "Knife";
+
+            case "sunglasses, dark glasses,shades":
+                return "sunglasses";
+
+            case "prayer rug, prayer mat":
+                return "'bel3araby Segadet sala aw mos7af'";
+
+            case "perfume, essence":
+                return "perfume";
+
+            case "cucumber, cuke":
+                return "cucumber/5yaar";
+
+            case "iPod":
+                return "Mobile/iPod";
+
+            case "computer keyboard, keypad":
+                return "keyboard";
+
+            case "mouse, computer mouse":
+                return "mouse";
+
+            case "remote control, remote":
+                return "remote control/Calculator";
+
+            case "folding chair":
+                return "chair";
+
+            default:
+                return s_in;
+        }
+    }
 }
 
 
