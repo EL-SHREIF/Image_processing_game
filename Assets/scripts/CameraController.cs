@@ -102,6 +102,8 @@ public class CameraController : MonoBehaviour
     int level3task = 1;           // The number of task in level 3
     float level3Score1 = 0, level3Score2 = 0, level3Score3 = 0;
     bool level3Ready = false;
+    Mat level3part3Screen = new Mat();
+    Point[] level3part3Contour = new Point[1];
     //============================================================================
 
     private void Start()
@@ -139,7 +141,21 @@ public class CameraController : MonoBehaviour
         Enable_Ready_and_Task_only("First level is searching for Colors Are you Ready??", 70);
 
         // initialize the draw mask to be the same of the screen and to have black pixels.
-        draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));        
+        draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
+        // Initialize level 3 part 3 screen with a rectangle.
+        level3part3Screen = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
+        Cv2.Line(level3part3Screen,new Point(500,100) ,new Point(500,500) , new Scalar(255, 0, 0), 10, LineTypes.Filled);
+        Cv2.Line(level3part3Screen, new Point(500, 500), new Point(800, 500), new Scalar(255, 0, 0), 10, LineTypes.Filled);
+        Cv2.Line(level3part3Screen, new Point(800, 500), new Point(800, 100), new Scalar(255, 0, 0), 10, LineTypes.Filled);
+        Cv2.Line(level3part3Screen, new Point(500, 100), new Point(800, 100), new Scalar(255, 0, 0), 10, LineTypes.Filled);
+
+        // Get the initial contour of the rectangle in level 3 part 3.
+        Point[][] contors = new Point[1][];
+        HierarchyIndex[] heirarchy = new HierarchyIndex[1];
+        Mat mask = new Mat();
+        Cv2.InRange(level3part3Screen, new Scalar(10, 0, 0), new Scalar(255, 255, 255), mask);
+        Cv2.FindContours(mask, out contors, out heirarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+        level3part3Contour = contors[0];        
     }
 
     private void Update()
@@ -398,6 +414,7 @@ public class CameraController : MonoBehaviour
         {
             if (level3task == 1)
             {
+                // Update the UI for level 3 part 2 and evaluate part 1 score.
                 level3task = 2;
                 if (timer > 0)
                 {
@@ -418,12 +435,13 @@ public class CameraController : MonoBehaviour
             }
             else if(level3task == 2)
             {
+                // Update the UI for level 3 part 3 and evaluate part 2 score.
                 level3task = 3;
                 if (timer > 0)
                 {
 
                     level3Score2 = ComputeDrawnPercentage();
-                    StartCoroutine(showAns(false));
+                    
 
                 }
                 else
@@ -437,13 +455,53 @@ public class CameraController : MonoBehaviour
                 timer = 100;
                 takeway = false;
                 
-                draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
+                draw = level3part3Screen;
             }
-            else
+            else if(level3task == 3)
             {
-
+                // Update the UI for final score and evaluate part 3 score.
+                level3task = 4;
+                if (timer > 0)
+                {
+                     level3Score3 = Evaluate_level3_part3_score();
+                }
+                else
+                {
+                    StartCoroutine(showTLE());
+                }
+                //calculate the score and set the UI and make it ready for level 3
+                float tmp = ((level3Score1 + level3Score2 + level3Score3) / 30) * 10;
+                player_score.GetComponent<Text>().text = tmp.ToString();
+                Take_picture_buttom.SetActive(false);
+                ready_buttom.SetActive(true);
+                level_num.GetComponent<Text>().text = "3";
+                timer = 0;
+                takeway = true;
+                time_left.GetComponent<Text>().text = "00";
+                level = 3;
+                task_msg.GetComponent<Text>().text = "your score for level 3";
+                task_msg.GetComponent<Text>().fontSize = 50;
             }
+            
         }
+
+    }
+    // Helper function to evaluate level 3 part 3(color the rectangle in the picture without going out of bounds).
+    public float Evaluate_level3_part3_score()
+    {
+        // get the contour of the picture draw and check how many of the contours have been preserved and not gone out of the bounding rectangle.
+        Point[][] contors = new Point[1][];
+        HierarchyIndex[] heirarchy = new HierarchyIndex[1];
+        Mat mask = new Mat();
+        Cv2.InRange(draw, new Scalar(10, 0, 0), new Scalar(255, 255, 255), mask);
+        Cv2.FindContours(mask, out contors, out heirarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+        Point[] firstContour = contors[0];
+        int equalContourPoints = 0;
+        for (int i = 0; i < Mathf.Min(level3part3Contour.Length,firstContour.Length); i++)
+        {
+            if (level3part3Contour[i] == firstContour[i]) equalContourPoints++;
+        }
+        return (equalContourPoints / level3part3Contour.Length) * 10;
 
     }
     
@@ -616,7 +674,7 @@ public class CameraController : MonoBehaviour
             Point2f center = new Point2f();
             float radius = 0;
             Cv2.MinEnclosingCircle(mx, out center, out radius);
-            if (last.X != 0 && last.Y != 0) Cv2.Line(draw, center, last, new Scalar(255, 0, 0), 4, LineTypes.Filled);
+            if (last.X != 0 && last.Y != 0) Cv2.Line(draw, center, last, new Scalar(255, 0, 0), 10, LineTypes.Filled);
             last = center;
         }
     }
