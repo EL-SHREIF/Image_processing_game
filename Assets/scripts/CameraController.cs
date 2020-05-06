@@ -99,6 +99,9 @@ public class CameraController : MonoBehaviour
     // used to capture the last point to draw a line between it and the current point.
     Mat draw = new Mat();
     Point last = new Point();
+    int level3task = 1;           // The number of task in level 3
+    float level3Score1 = 0, level3Score2 = 0, level3Score3 = 0;
+    bool level3Ready = false;
     //============================================================================
 
     private void Start()
@@ -179,14 +182,16 @@ public class CameraController : MonoBehaviour
         //Debuging Part====================================================================
         //remove this when you finish development please
 
-        else if(level == 3)// added after you press ready button
+        else if(level3Ready)// added after you press ready button
         {
+            
             // Take our draw mask at the current moment and convert it to texture and apply it to the background. 
-            var updatedTexture = new Texture2D(backCam.height, backCam.width);
+            Texture2D updatedTexture = new Texture2D(backCam.height, backCam.width);
             updatedTexture = OpenCvSharp.Unity.MatToTexture(draw);
             updatedTexture.Apply();
             background.texture = updatedTexture;
             DrawScreen();
+            
         }
         //================================================================================
     }
@@ -295,8 +300,12 @@ public class CameraController : MonoBehaviour
             string str = get_task_of_second_level();
             Press_Ready_button_helper(str, 70);
         }
-        else if (s == "3") { 
-            
+        else if (s == "3") {
+            level3Ready = true;
+            timer = 100;
+            takeway = false;
+            string str = get_task_of_third_level();
+            Press_Ready_button_helper(str, 70);
         }
     }
 
@@ -385,6 +394,56 @@ public class CameraController : MonoBehaviour
                 //======================================================================
             }
         }
+        else
+        {
+            if (level3task == 1)
+            {
+                level3task = 2;
+                if (timer > 0)
+                {
+                    level3Score1 = DetectCircle();
+                    StartCoroutine(showAns(level3Score1==10));
+                }
+                else
+                {
+                    StartCoroutine(showTLE());
+                }
+                timer = 0;
+                takeway = true;
+                time_left.GetComponent<Text>().text = "00";
+                task_msg.GetComponent<Text>().text = get_task_of_third_level();
+                timer = 100;
+                takeway = false;
+                draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
+            }
+            else if(level3task == 2)
+            {
+                level3task = 3;
+                if (timer > 0)
+                {
+
+                    level3Score2 = ComputeDrawnPercentage();
+                    StartCoroutine(showAns(false));
+
+                }
+                else
+                {
+                    StartCoroutine(showTLE());
+                }
+                timer = 0;
+                takeway = true;
+                time_left.GetComponent<Text>().text = "00";
+                task_msg.GetComponent<Text>().text = get_task_of_third_level();
+                timer = 100;
+                takeway = false;
+                
+                draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
+            }
+            else
+            {
+
+            }
+        }
 
     }
     
@@ -405,7 +464,15 @@ public class CameraController : MonoBehaviour
         string s_out = Get_the_name_of_object(s_in);
         return "Search for " + s_out + " please :)";
     }
- 
+    public string get_task_of_third_level()
+    {
+        // get the task we choose for level 3 and output it to the user.
+        if (level3task == 1) return "Draw a circle";
+        else if (level3task == 2) return "Fill the screen with blue color";
+        else if (level3task == 3) return "Fill the drawn image with blue color";
+        return "";
+    }
+
     public float evaluate_level_one()
     {
         // Helper function to evaluate the score for level one by quering the associated function for the task we have
@@ -645,12 +712,13 @@ public class CameraController : MonoBehaviour
     // Helper function to detect if there is a circle drawn on the screen.
     public int DetectCircle()
     {
+        // Get a mask for the drawn image.
         CircleSegment[] circles = null;
         int score = 0;
         Mat mask = new Mat();
         Cv2.InRange(draw, new Scalar(10, 0, 0), new Scalar(255, 255, 255), mask);
         //Cv2.ImShow("mask", mask);
-        
+        // Usage of HoughCircles function to detect circles in the image.
         circles = Cv2.HoughCircles(mask, OpenCvSharp.HoughMethods.Gradient, 1,
         10,  // change this value to detect circles with different distances to each other
         100, 30, 1, 0 // change the last two parameters
@@ -660,6 +728,23 @@ public class CameraController : MonoBehaviour
 
         
         return score;
+    }
+
+    // Helper function to detect how much of the screen has blue color and how much is black and compute the 
+    // percentage of the blue color from the screen.
+    public float ComputeDrawnPercentage()
+    {
+        // Make a mask for the colored part.
+        Mat mask = new Mat();
+        Cv2.InRange(draw, new Scalar(10, 0, 0), new Scalar(255, 255, 255), mask);
+        // Get the amount of non colored parts.
+        int BlackPixels = 0;
+        for (int i = 0; i < mask.Rows; i++)
+        {
+            for (int j = 0; j < mask.Cols; j++) if (mask.At<Vec3b>(i, j)[0] != 0 && mask.At<Vec3b>(i, j)[1] != 0 && mask.At<Vec3b>(i, j)[2] != 0) BlackPixels++;
+        }
+        // compute the score out of 10
+        return BlackPixels / (backCam.width * backCam.height) * 10;
     }
 
     private void TFClassify()
