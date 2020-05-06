@@ -191,7 +191,7 @@ public class CameraController : MonoBehaviour
             updatedTexture.Apply();
             background.texture = updatedTexture;
             DrawScreen();
-            
+            Resources.UnloadUnusedAssets();
         }
         //================================================================================
     }
