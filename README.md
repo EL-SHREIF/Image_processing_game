@@ -13,4 +13,4 @@ This is a game that use the mobile camera to help you spending good time by havi
 
 2) We use Tensorflow sharp for unity
 
-<img src="https://github.com/EL-SHREIF/Image_processing_game/master/items/qd.gif">
+<img src="https://github.com/EL-SHREIF/Image_processing_game/blob/master/items/hola.gif">
