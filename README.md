@@ -22,7 +22,7 @@ This is a game that use the mobile camera to help you spending good time by havi
 ### Project Video
 We made 2 videos of the project one with the project running in android mobile and the other one the code is running on the Unity IDE and here is the links:
 
-[Mobile Video]()
+[Mobile Video](https://youtu.be/FcKmZT4Own8)
 
 [Unity IDE Video]()
 
