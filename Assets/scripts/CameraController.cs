@@ -144,10 +144,10 @@ public class CameraController : MonoBehaviour
         draw = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
         // Initialize level 3 part 3 screen with a rectangle.
         level3part3Screen = new OpenCvSharp.Mat(backCam.height, backCam.width, MatType.CV_8UC3, new Scalar(0, 0, 0));
-        Cv2.Line(level3part3Screen,new Point(500,100) ,new Point(500,500) , new Scalar(255, 0, 0), 10, LineTypes.Filled);
-        Cv2.Line(level3part3Screen, new Point(500, 500), new Point(800, 500), new Scalar(255, 0, 0), 10, LineTypes.Filled);
-        Cv2.Line(level3part3Screen, new Point(800, 500), new Point(800, 100), new Scalar(255, 0, 0), 10, LineTypes.Filled);
-        Cv2.Line(level3part3Screen, new Point(500, 100), new Point(800, 100), new Scalar(255, 0, 0), 10, LineTypes.Filled);
+        Cv2.Line(level3part3Screen,new Point(backCam.width/2,backCam.height/2) ,new Point(backCam.width/2,backCam.height/2+300) , new Scalar(255, 0, 0), 10, LineTypes.Filled);
+        Cv2.Line(level3part3Screen, new Point(backCam.width/2, backCam.height/2+300), new Point(backCam.width/2+300, backCam.height/2+300), new Scalar(255, 0, 0), 10, LineTypes.Filled);
+        Cv2.Line(level3part3Screen, new Point(backCam.width/2+300, backCam.height+300), new Point(backCam.width/2+300, backCam.height/2), new Scalar(255, 0, 0), 10, LineTypes.Filled);
+        Cv2.Line(level3part3Screen, new Point(backCam.width/2+300, backCam.height/2), new Point(backCam.width/2,backCam.height/2), new Scalar(255, 0, 0), 10, LineTypes.Filled);
 
         // Get the initial contour of the rectangle in level 3 part 3.
         Point[][] contors = new Point[1][];
