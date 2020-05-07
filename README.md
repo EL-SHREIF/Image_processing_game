@@ -17,6 +17,8 @@ This is a game that use the mobile camera to help you spending good time by havi
 
 2) We use Tensorflow sharp for unity
 
+3) The primary logic code of the app is in "Assets\scripts\CameraController.cs" file.
+
 <img src="https://github.com/EL-SHREIF/Image_processing_game/blob/master/items/hola.gif">
 
 ### Project Video
@@ -24,7 +26,7 @@ We made 2 videos of the project one with the project running in android mobile a
 
 [Mobile Video](https://youtu.be/FcKmZT4Own8)
 
-[Unity IDE Video]()
+[Unity IDE Video](https://www.youtube.com/watch?v=8KCKcA2NQYM)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
